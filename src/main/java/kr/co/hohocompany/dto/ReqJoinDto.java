@@ -14,11 +14,11 @@ public class ReqJoinDto {
     private String email;
     private String nickname;
     private Short ageGroupType;
-    private String babyGender;
+    private Character babyGender;
     private String babyBirthday;
 
     @Builder
-    public ReqJoinDto(String email, String nickname, Short ageGroupType, String babyGender, String babyBirthday) {
+    public ReqJoinDto(String email, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
         this.email = email;
         this.nickname = nickname;
         this.ageGroupType = ageGroupType;

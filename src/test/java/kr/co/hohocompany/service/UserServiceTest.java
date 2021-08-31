@@ -18,7 +18,7 @@ class UserServiceTest {
                 .email("KAKAO.test2@gmail.com")
                 .nickname("테스트아이디3")
                 .ageGroupType((short)2)
-                .babyGender("M")
+                .babyGender('M')
                 .babyBirthday("2020년 8월 13일")
                 .build();
 

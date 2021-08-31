@@ -62,6 +62,7 @@ public class UserService {
     public void edit(ReqEditUserDto reqEditUserDto) throws Exception {
         System.out.println("이상무");
         Optional<User> _user = userRepository.findById(reqEditUserDto.getUserId());
+
         System.out.println(_user);
         if(_user.isEmpty()) throw new Exception("유저 ID 미확인");
         User user = _user.get();
@@ -98,10 +99,19 @@ public class UserService {
         }
 
         System.out.println(reqEditUserDto);
-        if(reqEditUserDto.getNickname() != null){
-            System.out.println("널 아니야!!");
-            user.setNickname(reqEditUserDto.getNickname());
 
+        if(reqEditUserDto.getNickname() != null){
+            user.setNickname(reqEditUserDto.getNickname());
+        }
+        UserDetail userDetail = userDetailRepository.findByUserId(reqEditUserDto.getUserId());
+        if(reqEditUserDto.getAgeGroupType() != null){
+            userDetail.setAgeGroupType(reqEditUserDto.getAgeGroupType());
+        }
+        if(reqEditUserDto.getBabyBirthday() != null){
+            userDetail.setBabyBirthday(reqEditUserDto.getBabyBirthday());
+        }
+        if(reqEditUserDto.getNickname() != null){
+            userDetail.setBabyGender(reqEditUserDto.getBabyGender());
         }
     }
 }

@@ -27,7 +27,7 @@ class UserControllerTest {
         ReqJoinDto joinDto = ReqJoinDto.builder()
                 .nickname("테스트아이디3")
                 .ageGroupType((short)2)
-                .babyGender("M")
+                .babyGender('M')
                 .babyBirthday("2020년 8월 13일")
                 .build();
 
@@ -50,6 +50,9 @@ class UserControllerTest {
                 .userId(150L)
 //                .images(files)
 //                .imageInit('Y')
+                .ageGroupType((short) 1)
+                .babyBirthday("202011111111")
+                .babyGender('M')
                 .nickname("고재범")
                 .build();
 

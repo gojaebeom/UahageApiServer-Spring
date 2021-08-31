@@ -1,9 +1,6 @@
 package kr.co.hohocompany.domain.user;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_details")
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class UserDetail {
@@ -29,7 +27,7 @@ public class UserDetail {
     private short ageGroupType;
 
     @Column(name = "baby_gender")
-    private String babyGender;
+    private Character babyGender;
 
     @Column(name = "baby_birthday")
     private String babyBirthday;
@@ -41,7 +39,7 @@ public class UserDetail {
     private LocalDateTime updatedAt;
 
     @Builder
-    public UserDetail(Long id, User user, short ageGroupType, String babyGender, String babyBirthday) {
+    public UserDetail(Long id, User user, short ageGroupType, Character babyGender, String babyBirthday) {
         this.id = id;
         this.user = user;
         this.ageGroupType = ageGroupType;
