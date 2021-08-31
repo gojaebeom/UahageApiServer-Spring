@@ -6,6 +6,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,7 @@ public class S3Service {
                 .build();
     }
 
-    public List<String> upload(List<MultipartFile> files) throws Exception {
+    public List<String> upload(String DIR, Long userId, List<MultipartFile> files) throws Exception {
         // TODO: 이미지 파일 없을 시 바로 리턴
         if(files.isEmpty()) return null;
 
@@ -59,14 +60,16 @@ public class S3Service {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             Date date = new Date();
-            String strDate = sdf.format(date);
-            System.out.println(strDate);
+            String stringDate = sdf.format(date);
             String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            String stringUserId = String.valueOf(userId);
+            String fullImageName = DIR+"/"+"u"+stringUserId+"_"+stringDate+ext;
 
-            s3Client.putObject(new PutObjectRequest(bucket, strDate, file.getInputStream(), null)
+
+            s3Client.putObject(new PutObjectRequest(bucket, fullImageName, file.getInputStream(), null)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            fileNames.add(s3Client.getUrl(bucket, strDate.concat(ext)).toString());
+            fileNames.add(s3Client.getUrl(bucket, fullImageName).toString());
         }
         return fileNames;
     }
@@ -89,5 +92,18 @@ public class S3Service {
         if( fileSize > limitSize  ){
             throw new BindException("File Size Overflow: 파일 하나의 사이즈는 최대 2MB로 제한됩니다.");
         }
+    }
+
+    public void delete(String key) throws Exception {
+        //Delete 객체 생성
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, key);
+        //Delete
+        try{
+            this.s3Client.deleteObject(deleteObjectRequest);
+            System.out.println(String.format("[%s] deletion complete", key));
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 }

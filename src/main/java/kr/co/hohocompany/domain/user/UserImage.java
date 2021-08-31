@@ -21,15 +21,15 @@ public class UserImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "origin_path", length = 100, nullable = false)
-    private String originPath;
+    @Column(name = "image_path", length = 100, nullable = false)
+    private String imagePath;
 
-    @Column(name = "preview_path", length = 100)
-    private String previewPath;
+    @Column(name = "preview_image_path", length = 100)
+    private String previewImagePath;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -38,10 +38,10 @@ public class UserImage {
     private LocalDateTime updatedAt;
 
     @Builder
-    public UserImage(Long id, User user, String originPath, String previewPath) {
+    public UserImage(Long id, User user, String imagePath, String previewImagePath) {
         this.id = id;
         this.user = user;
-        this.originPath = originPath;
-        this.previewPath = previewPath;
+        this.imagePath = imagePath;
+        this.previewImagePath = previewImagePath;
     }
 }

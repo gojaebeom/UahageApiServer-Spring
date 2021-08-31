@@ -1,5 +1,6 @@
 package kr.co.hohocompany.controller;
 
+import com.amazonaws.util.IOUtils;
 import kr.co.hohocompany.dto.ReqEditUserDto;
 import kr.co.hohocompany.dto.ReqJoinDto;
 import org.junit.jupiter.api.Test;
@@ -40,11 +41,16 @@ class UserControllerTest {
 
     @Test
     public void editTest() throws Exception {
-        MultipartFile multipartFile = new MockMultipartFile("test.jpg", new FileInputStream(new File("C:/images/test.jpg")));
+        File file = new File("C:/images/test.jpg");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
         List<MultipartFile> files = new ArrayList<>();
         files.add(multipartFile);
         ReqEditUserDto reqEditUserDto = ReqEditUserDto.builder()
-                .images(files)
+                .userId(150L)
+//                .images(files)
+//                .imageInit('Y')
+                .nickname("고재범")
                 .build();
 
         userController.edit(reqEditUserDto);

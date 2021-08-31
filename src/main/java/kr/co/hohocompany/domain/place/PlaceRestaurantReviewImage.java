@@ -20,7 +20,7 @@ public class PlaceRestaurantReviewImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = PlaceRestaurantReview.class, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "review_id")
     private PlaceRestaurant restaurant;
 

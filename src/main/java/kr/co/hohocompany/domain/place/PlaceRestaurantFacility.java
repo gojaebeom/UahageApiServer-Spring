@@ -20,7 +20,7 @@ public class PlaceRestaurantFacility {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(targetEntity = PlaceRestaurant.class, cascade = CascadeType.REMOVE)
+    @OneToOne
     @JoinColumn(name = "restaurant_id")
     private PlaceRestaurant restaurant;
 

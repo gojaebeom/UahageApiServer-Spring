@@ -1,28 +1,31 @@
 package kr.co.hohocompany.dto;
 
+import kr.co.hohocompany.domain.user.User;
+import kr.co.hohocompany.domain.user.UserImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
 public class ReqEditUserDto {
-    private Long id;
+    private Long userId;
     private List<MultipartFile> images;
-    private Character imageInit = 'Y';
+    private Character imageInit;
     private String nickname;
     private Short ageGroupType;
     private Character babyGender;
     private String babyBirthday;
 
     @Builder
-    public ReqEditUserDto(Long id, List<MultipartFile> images, Character imageInit, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
-        this.id = id;
+    public ReqEditUserDto(Long userId, List<MultipartFile> images, Character imageInit, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
+        this.userId = userId;
         this.images = images;
         this.imageInit = imageInit;
         this.nickname = nickname;

@@ -15,8 +15,8 @@ class UserServiceTest {
     @Test
     public void joinWithOauth2Test(){
         ReqJoinDto joinDto = ReqJoinDto.builder()
-                .email("KAKAO.test@gmail.com")
-                .nickname("테스트아이디2")
+                .email("KAKAO.test2@gmail.com")
+                .nickname("테스트아이디3")
                 .ageGroupType((short)2)
                 .babyGender("M")
                 .babyBirthday("2020년 8월 13일")

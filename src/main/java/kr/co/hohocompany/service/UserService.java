@@ -2,15 +2,22 @@ package kr.co.hohocompany.service;
 
 import kr.co.hohocompany.domain.user.User;
 import kr.co.hohocompany.domain.user.UserDetail;
+import kr.co.hohocompany.domain.user.UserImage;
+import kr.co.hohocompany.dto.ReqEditUserDto;
 import kr.co.hohocompany.dto.ReqJoinDto;
 import kr.co.hohocompany.dto.ResJoinDto;
 import kr.co.hohocompany.repository.UserDetailRepository;
+import kr.co.hohocompany.repository.UserImageRepository;
 import kr.co.hohocompany.repository.UserRepository;
+import kr.co.hohocompany.repository.mapper.UserImageForUserEdit;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,7 +27,10 @@ public class UserService {
 
     private UserRepository userRepository;
     private UserDetailRepository userDetailRepository;
+    private UserImageRepository userImageRepository;
+
     private TokenService tokenService;
+    private S3Service s3Service;
 
     public ResJoinDto joinWithOauth(ReqJoinDto reqJoinDto) {
 
@@ -47,5 +57,51 @@ public class UserService {
                 .accessToken(act)
                 .refreshToken(act)
                 .build();
+    }
+
+    public void edit(ReqEditUserDto reqEditUserDto) throws Exception {
+        System.out.println("이상무");
+        Optional<User> _user = userRepository.findById(reqEditUserDto.getUserId());
+        System.out.println(_user);
+        if(_user.isEmpty()) throw new Exception("유저 ID 미확인");
+        User user = _user.get();
+        System.out.println(user);
+
+        List<String> fileNames = new ArrayList<>();
+
+        if(reqEditUserDto.getImageInit() != null && reqEditUserDto.getImageInit() == 'Y'){
+            System.out.println("초기화/이미지 삭제");
+            List<UserImageForUserEdit> userImages = userImageRepository.findAllByUserId(reqEditUserDto.getUserId());
+            System.out.println(userImages.get(0).getImagePath());
+            for(UserImageForUserEdit userImage : userImages){
+                String[] imagePaths = userImage.getImagePath().split("/");
+                s3Service.delete("profiles/".concat(imagePaths[imagePaths.length-1]));
+                userImageRepository.deleteById(userImage.getId());
+            }
+        }else{
+            System.out.println("업로드");
+            List<UserImage> userImages = new ArrayList<>();
+
+            System.out.println(reqEditUserDto.getImages());
+            if(reqEditUserDto.getImages() != null){
+                System.out.println("있음");
+                fileNames = s3Service.upload("profiles", reqEditUserDto.getUserId(), reqEditUserDto.getImages());
+                for(String fileName : fileNames){
+                    UserImage userImage = UserImage.builder()
+                            .user(user)
+                            .imagePath(fileName)
+                            .build();
+                    userImages.add(userImage);
+                }
+                userImageRepository.saveAll(userImages);
+            }
+        }
+
+        System.out.println(reqEditUserDto);
+        if(reqEditUserDto.getNickname() != null){
+            System.out.println("널 아니야!!");
+            user.setNickname(reqEditUserDto.getNickname());
+
+        }
     }
 }

@@ -25,11 +25,11 @@ public class PlaceRestaurantReviewDeclaration {
     @JoinColumn(name = "category_id")
     private PlaceRestaurantReviewDeclarationCategory category;
 
-    @ManyToOne(targetEntity = User.class, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(targetEntity = PlaceRestaurantReview.class, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "review_id")
     private PlaceRestaurantReview review;
 

@@ -21,7 +21,7 @@ public class UserDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

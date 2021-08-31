@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -25,7 +27,6 @@ public class UserController {
 
     private UserService userService;
     private Oauth2LoginService oauth2LoginService;
-    private S3Service s3Service;
 
     @PostMapping("/kakao-login")
     public ResponseEntity<?> joinWithKakao(HttpServletRequest request, ReqJoinDto reqJoinDto) throws Exception {
@@ -45,7 +46,7 @@ public class UserController {
         }catch(Exception e){
 
             response.put("message", e.getMessage());
-            response.put("statusCode", 401);
+            response.put("statusCode", 400);
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -53,13 +54,19 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> edit(ReqEditUserDto reqEditUserDto) throws Exception {
         System.out.println(reqEditUserDto);
-
+        Map<String, Object> response = new HashMap<>();
         try{
-            s3Service.upload(reqEditUserDto.getImages());
-            return null;
+            userService.edit(reqEditUserDto);
+
+            response.put("message","회원 수정이 정상적으로 처리되었습니다.");
+            response.put("statusCode", 200);
+            response.put("data", true);
+            return ResponseEntity.ok(response);
         }catch(Exception e){
 
-            return null;
+            response.put("message", e.getMessage());
+            response.put("statusCode", 400);
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
