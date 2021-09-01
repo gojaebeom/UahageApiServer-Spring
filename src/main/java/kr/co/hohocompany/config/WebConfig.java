@@ -19,11 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new Oauth2TokenVerifyInterceptor())
                 .addPathPatterns("/users/**-login");
 
-        registry.addInterceptor(new TokenVerifyInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/users/kakao-login")
-                .excludePathPatterns("/users/naver-login");
-
-
+//        registry.addInterceptor(new TokenVerifyInterceptor())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/users/kakao-login")
+//                .excludePathPatterns("/users/naver-login");
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 public class ReqEditUserDto {
-    private Long userId;
+    private Long id;
     private List<MultipartFile> images;
     private Character imageInit;
     private String nickname;
@@ -24,8 +24,8 @@ public class ReqEditUserDto {
     private String babyBirthday;
 
     @Builder
-    public ReqEditUserDto(Long userId, List<MultipartFile> images, Character imageInit, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
-        this.userId = userId;
+    public ReqEditUserDto(Long id, List<MultipartFile> images, Character imageInit, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
+        this.id = id;
         this.images = images;
         this.imageInit = imageInit;
         this.nickname = nickname;

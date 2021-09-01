@@ -1,20 +1,11 @@
 package kr.co.hohocompany.controller;
 
-import com.amazonaws.util.IOUtils;
-import kr.co.hohocompany.dto.ReqEditUserDto;
 import kr.co.hohocompany.dto.ReqJoinDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest
 class UserControllerTest {
@@ -40,22 +31,29 @@ class UserControllerTest {
     }
 
     @Test
-    public void editTest() throws Exception {
-        File file = new File("C:/images/test.jpg");
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
-        List<MultipartFile> files = new ArrayList<>();
-        files.add(multipartFile);
-        ReqEditUserDto reqEditUserDto = ReqEditUserDto.builder()
-                .userId(150L)
-//                .images(files)
-//                .imageInit('Y')
-                .ageGroupType((short) 1)
-                .babyBirthday("202011111111")
-                .babyGender('M')
-                .nickname("고재범")
-                .build();
+    public void destroyTest() throws Exception {
+        ResponseEntity responseEntity = userController.destroy(148l);
+        System.out.println(responseEntity);
+    }
 
-        userController.edit(reqEditUserDto);
+    @Test
+    public void verifyDuplicateNickname() {
+        final String NICKNAME = "미횬";
+        ResponseEntity responseEntity = userController.verifyDuplicateNickname(NICKNAME);
+        System.out.println(responseEntity);
+    }
+
+    @Test
+    public void verifyDuplicateEmail(){
+        final String EMAIL = "";
+        ResponseEntity responseEntity = userController.verifyDuplicateEmail(EMAIL);
+        System.out.println(responseEntity);
+    }
+
+    @Test
+    public void showTest(){
+        final Long USER_ID = 145L;
+        ResponseEntity responseEntity = userController.show(USER_ID);
+        System.out.println(responseEntity);
     }
 }

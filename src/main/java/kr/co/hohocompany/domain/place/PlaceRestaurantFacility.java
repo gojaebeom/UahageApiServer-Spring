@@ -25,31 +25,31 @@ public class PlaceRestaurantFacility {
     private PlaceRestaurant restaurant;
 
     @Column(name = "baby_menu")
-    private boolean babyMenu;
+    private Boolean babyMenu;
 
     @Column(name = "baby_bed")
-    private boolean babyBed;
+    private Boolean babyBed;
 
     @Column(name = "baby_tableware")
-    private boolean babyTableware;
+    private Boolean babyTableware;
 
     @Column(name = "baby_chair")
-    private boolean babyChair;
+    private Boolean babyChair;
 
     @Column(name = "diaper_change")
-    private boolean diaperChange;
+    private Boolean diaperChange;
 
     @Column(name = "stroller")
-    private boolean stroller;
+    private Boolean stroller;
 
     @Column(name = "meeting_room")
-    private boolean meetingRoom;
+    private Boolean meetingRoom;
 
     @Column(name = "nursing_room")
-    private boolean nursingRoom;
+    private Boolean nursingRoom;
 
     @Column(name = "parking")
-    private boolean parking;
+    private Boolean parking;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

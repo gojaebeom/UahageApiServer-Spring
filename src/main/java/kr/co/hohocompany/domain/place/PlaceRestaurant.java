@@ -39,6 +39,4 @@ public class PlaceRestaurant {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-
 }

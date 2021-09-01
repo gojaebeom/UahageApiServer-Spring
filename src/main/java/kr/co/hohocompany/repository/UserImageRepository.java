@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserImageRepository extends JpaRepository<UserImage, Long> {
-    List<UserImageForUserEdit> findAllByUserId(Long userId);
+    List<UserImage> findAllByUserId(Long userId);
+
 }
