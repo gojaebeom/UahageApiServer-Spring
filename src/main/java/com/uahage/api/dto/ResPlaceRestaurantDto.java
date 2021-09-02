@@ -3,7 +3,8 @@ package com.uahage.api.dto;
 import lombok.*;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResPlaceRestaurantDto {
     private Integer id;
     private String name;

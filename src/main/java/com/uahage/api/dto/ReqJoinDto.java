@@ -5,13 +5,22 @@ import com.uahage.api.domain.UserDetail;
 import lombok.*;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class ReqJoinDto {
     private String email;
     private String nickname;
     private Short ageGroupType;
     private Character babyGender;
     private String babyBirthday;
+
+    @Builder
+    public ReqJoinDto(String email, String nickname, Short ageGroupType, Character babyGender, String babyBirthday) {
+        this.email = email;
+        this.nickname = nickname;
+        this.ageGroupType = ageGroupType;
+        this.babyGender = babyGender;
+        this.babyBirthday = babyBirthday;
+    }
 
     public User toUser() {
         return User.builder()

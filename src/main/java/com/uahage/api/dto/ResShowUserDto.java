@@ -3,9 +3,11 @@ package com.uahage.api.dto;
 import lombok.*;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResShowUserDto {
 
+    private Long id;
     private String nickname;
     private String imagePath;
     private Short ageGroupType;

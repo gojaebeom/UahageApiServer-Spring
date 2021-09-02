@@ -138,14 +138,14 @@ public class UserService {
     }
 
     public ResShowUserDto show(Long userId) {
-        User user = userRepository.findOneJoinWithUserDetailAndUserImageById(userId);
-        System.out.println(user);
+        ResShowUserDto resShowUserDto = userRepository.findOneJoinWithUserDetailAndUserImageById(userId);
+        System.out.println(resShowUserDto);
 
-        if(user == null) throw new IllegalArgumentException("id와 일치하는 회원을 찾을 수 없습니다.");
+        if(resShowUserDto == null) throw new IllegalArgumentException("id와 일치하는 회원을 찾을 수 없습니다.");
 
 //        UserDetail userDetail = userDetailRepository.findByUserId(userId);
 //        List<UserImage> userImages = userImageRepository.findAllByUserId(userId);
 
-        return null;
+        return resShowUserDto;
     }
 }

@@ -3,24 +3,31 @@
 
 <mapper namespace="com.uahage.api.repository.UserRepository">
 
-    <resultMap id="findOneJoinWithUserDetailAndUserImageByIdMap" type="com.uahage.api.domain.User">
+    <resultMap id="findOneJoinWithUserDetailAndUserImageByIdMap" type="com.uahage.api.dto.ResShowUserDto">
         <id column="id" property="id"/>
         <result column="nickname" property="nickname"/>
-        <association property="userDetail" javaType="com.uahage.api.domain.UserDetail">
-            <result column="age_group_type" property="ageGroupType"/>
-            <result column="baby_birthday" property="babyBirthday"/>
-            <result column="baby_gender" property="babyGender"/>
-        </association>
-        <association property="userImage" javaType="com.uahage.api.domain.UserImage">
-            <result column="image_path" property="imagePath"/>
-        </association>
+        <result column="image_path" property="imagePath"/>
+        <result column="age_group_type" property="ageGroupType"/>
+        <result column="baby_birthday" property="babyBirthday"/>
+        <result column="baby_gender" property="babyGender"/>
+
+<!--        <association property="userDetail" javaType="com.uahage.api.domain.UserDetail">-->
+<!--            <result column="age_group_type" property="ageGroupType"/>-->
+<!--            <result column="baby_birthday" property="babyBirthday"/>-->
+<!--            <result column="baby_gender" property="babyGender"/>-->
+<!--        </association>-->
+<!--        <association property="userImage" javaType="com.uahage.api.domain.UserImage">-->
+<!--            <result column="image_path" property="imagePath"/>-->
+<!--        </association>-->
     </resultMap>
     <select id="findOneJoinWithUserDetailAndUserImageById" parameterType="java.lang.Long" resultMap="findOneJoinWithUserDetailAndUserImageByIdMap">
         select u.id, u.nickname, ud.age_group_type, ud.baby_birthday, ud.baby_gender, ui.image_path
         from users u
              left join user_details ud on u.id = ud.user_id
              left join user_images ui on u.id = ui.user_id
-        where u.id = #{id};
+        where u.id = #{id}
+        order by ui.id desc
+        limit 1;
     </select>
 
     <select id="findById" resultType="com.uahage.api.domain.User">

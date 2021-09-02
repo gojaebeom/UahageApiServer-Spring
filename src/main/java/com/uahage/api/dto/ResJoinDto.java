@@ -3,7 +3,7 @@ package com.uahage.api.dto;
 import lombok.*;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class ResJoinDto {
     private String accessToken;
     private String refreshToken;

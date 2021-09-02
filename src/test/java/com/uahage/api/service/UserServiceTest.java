@@ -51,9 +51,9 @@ class UserServiceTest {
         files.add(multipartFile);
 
         ReqEditUserDto reqEditUserDto = ReqEditUserDto.builder()
-                .id(132L)
+                .id(92L)
                 .images(files)
-                .imageInit('Y')
+                .imageInit('N')
                 .ageGroupType((short) 3)
                 .babyBirthday("2020-06-21")
                 .babyGender('A')
@@ -86,7 +86,7 @@ class UserServiceTest {
 
     @Test
     public void showTest(){
-        final Long USER_ID = 170L;
+        final Long USER_ID = 92L;
         ResShowUserDto resUserShowDto = userService.show(USER_ID);
         System.out.println(resUserShowDto);
     }
