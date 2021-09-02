@@ -9,27 +9,27 @@ import java.util.List;
 
 public interface PlaceRestaurantRepository extends JpaRepository<PlaceRestaurant, Long> {
 
-    @Query(
-    "select " +
-    "new kr.co.hohocompany.dto.ResPlaceRestaurantDto(" +
-        "pr.id, " +
-        "pr.name, " +
-        "pr.address, " +
-        "pr.phone, " +
-        "pr.lat, " +
-        "pr.lon, " +
-        "prf.babyBed, " +
-        "prf.babyChair, " +
-        "prf.babyMenu, " +
-        "prf.babyTableware, " +
-        "prf.stroller, " +
-        "prf.diaperChange, " +
-        "prf.meetingRoom, " +
-        "prf.nursingRoom, " +
-        "prf.parking" +
-        ")" +
-    "from PlaceRestaurant pr " +
-    "left join PlaceRestaurantFacility prf on pr.id = prf.restaurant.id"
-    )
+//    @Query(
+//    "select " +
+//    "new kr.co.hohocompany.dto.ResPlaceRestaurantDto(" +
+//        "pr.id, " +
+//        "pr.name, " +
+//        "pr.address, " +
+//        "pr.phone, " +
+//        "pr.lat, " +
+//        "pr.lon, " +
+//        "prf.babyBed, " +
+//        "prf.babyChair, " +
+//        "prf.babyMenu, " +
+//        "prf.babyTableware, " +
+//        "prf.stroller, " +
+//        "prf.diaperChange, " +
+//        "prf.meetingRoom, " +
+//        "prf.nursingRoom, " +
+//        "prf.parking" +
+//        ")" +
+//    "from PlaceRestaurant pr " +
+//    "left join PlaceRestaurantFacility prf on pr.id = prf.restaurant.id"
+//    )
     List<ResPlaceRestaurantDto> findAllByWithRestaurantFacility();
 }

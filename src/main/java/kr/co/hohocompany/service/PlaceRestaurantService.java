@@ -1,11 +1,10 @@
 package kr.co.hohocompany.service;
 
 import kr.co.hohocompany.dto.ResPlaceRestaurantDto;
-import kr.co.hohocompany.repository.PlaceRestaurantFacilityRepository;
-import kr.co.hohocompany.repository.PlaceRestaurantRepository;
+import kr.co.hohocompany.dto.UserDto;
+import kr.co.hohocompany.repository.mapper.UserMapperRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,19 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 public class PlaceRestaurantService {
 
-    @Autowired
-    private PlaceRestaurantRepository placeRestaurantRepository;
-    private PlaceRestaurantFacilityRepository placeRestaurantFacilityRepository;
+    private UserMapperRepository userMapperRepository;
 
     public List<ResPlaceRestaurantDto> findAll() {
-        List<ResPlaceRestaurantDto> placeRestaurants = placeRestaurantRepository.findAllByWithRestaurantFacility();
-
-        System.out.println(placeRestaurants.size());
-
-//        for(ResPlaceRestaurantDto ResPlaceRestaurantDto : placeRestaurants){
-//            System.out.println("------------------------------------------");
-//            System.out.println(ResPlaceRestaurantDto);
-//        }
-        return placeRestaurants;
+        List<ResPlaceRestaurantDto> resPlaceRestaurantDtos = userMapperRepository.findAll();
+        System.out.println(resPlaceRestaurantDtos);
+        return null;
     }
 }
