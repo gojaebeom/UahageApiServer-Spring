@@ -1,0 +1,30 @@
+# Default Setting
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+# mybatis
+mybatis:
+  mapper-locations: mappers/**/*.xml
+  type-aliases-package: com.uahage.api.domain
+  configuration:
+    map-underscore-to-camel-case: true
+
+# AWS S3 INFO
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAS4ROJ4JBS23EBKA7
+      secretKey: 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
+    s3:
+      bucket: uahage
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+---
+spring:
+  profiles:
+    active: prod
+---

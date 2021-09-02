@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy  # 배포시 변경
+    url: jdbc:log4jdbc:postgresql://uahage2.c7qbk7qns6ot.ap-northeast-2.rds.amazonaws.com:5432/uahage_dev_v2
+    # driver-class-name: org.postgresql.Driver  # 배포시 변경
+    # url: jdbc:postgresql://uahage2.c7qbk7qns6ot.ap-northeast-2.rds.amazonaws.com:5432/uahage_dev_v2
+    username: postgres  # 사용자 이름 (로그인 시 사용)
+    password: hohocom!  # 사용자 암호 (로그인 시 사용)
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+
+log4jdbc:
+  spylogdelegator:
+    name: net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+  dump:
+    sql:
+      maxlinelength: 0

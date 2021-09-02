@@ -1,0 +1,17 @@
+package com.uahage.api.repository;
+
+import com.uahage.api.domain.User;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface UserRepository {
+    User findOneJoinWithUserDetailAndUserImageById(Long userId);
+    User findByEmail(String email);
+    Short countByNickname(String nickname);
+    void save(User user);
+    User findById(Long id);
+    void edit(User user);
+    void destroyById(Long id);
+    Short countByEmail(String email);
+
+}
