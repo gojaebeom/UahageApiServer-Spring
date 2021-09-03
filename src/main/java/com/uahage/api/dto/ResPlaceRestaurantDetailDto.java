@@ -1,20 +1,22 @@
 package com.uahage.api.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResPlaceRestaurantDto {
+public class ResPlaceRestaurantDetailDto {
     private Integer id;
     private String name;
     private String address;
     private String phone;
-    private Float lat;
-    private Float lon;
     private Float reviewTotal;
     private Long bookmark;
-    private String imagePath;
+    private List<String> imagePath;
     private Boolean babyBed;
     private Boolean babyChair;
     private Boolean babyMenu;

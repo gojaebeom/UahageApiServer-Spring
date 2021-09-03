@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.uahage.api.repository.PlaceRestaurantRepository">
+    <resultMap id="findAllOrOptionsMap" type="com.uahage.api.dto.ResPlaceRestaurantDto">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="lat" property="lat"/>
+        <result column="lon" property="lon"/>
+        <result column="baby_bed" property="babyBed"/>
+        <result column="baby_chair" property="babyChair"/>
+        <result column="baby_menu" property="babyMenu"/>
+        <result column="baby_tableware" property="babyTableware"/>
+        <result column="stroller" property="stroller"/>
+        <result column="diaper_change" property="diaperChange"/>
+        <result column="meeting_room" property="meetingRoom"/>
+        <result column="nursing_room" property="nursingRoom"/>
+        <result column="play_room" property="playRoom"/>
+        <result column="parking" property="parking"/>
+        <result column="image_path" property="imagePath"/>
+        <result column="review_total" property="reviewTotal"/>
+        <result column="bookmark" property="bookmark"/>
+    </resultMap>
+    <select id="findAllOrOptions" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDto" resultMap="findAllOrOptionsMap">
+        select
+            pr.id,
+            pr.name,
+            pr.address,
+            pr.phone,
+            pr.lat,
+            pr.lon,
+            prf.baby_bed,
+            prf.baby_chair,
+            prf.baby_menu,
+            prf.baby_tableware,
+            prf.stroller,
+            prf.diaper_change,
+            prf.meeting_room,
+            prf.nursing_room,
+            prf.play_room,
+            prf.parking,
+            (select image_path from p_restaurant_images where restaurant_id = pr.id limit 1) as image_path,
+            ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
+            coalesce(prb.id, 0) as bookmark
+        from p_restaurants as pr
+            left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
+            left outer join (select * from p_restaurant_bookmarks prb where user_id= 132) prb on pr.id = prb.restaurant_id
+        <where>
+            <if test="userId != null and isBookmarked == true">prb.user_id = #{userId}</if>
+            <if test="babyBed == true">and prf.baby_bed = true</if>
+            <if test="babyChair == true">and prf.baby_chair = true</if>
+            <if test="babyMenu == true">and prf.baby_menu = true</if>
+            <if test="babyTableware == true">and prf.baby_tableware = true</if>
+            <if test="stroller == true">and prf.stroller = true</if>
+            <if test="diaperChange == true">and prf.diaper_change = true</if>
+            <if test="meetingRoom == true">and prf.meeting_room = true</if>
+            <if test="nursingRoom == true">and prf.nursing_room = true</if>
+            <if test="playRoom == true">and prf.play_room = true</if>
+            <if test="parking == true">and prf.parking = true</if>
+        </where>
+        <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
+        <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
+    </select>
+
+    <resultMap id="findOneByIdMap" type="java.util.HashMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="baby_bed" property="babyBed"/>
+        <result column="baby_chair" property="babyChair"/>
+        <result column="baby_menu" property="babyMenu"/>
+        <result column="baby_tableware" property="babyTableware"/>
+        <result column="stroller" property="stroller"/>
+        <result column="diaper_change" property="diaperChange"/>
+        <result column="meeting_room" property="meetingRoom"/>
+        <result column="nursing_room" property="nursingRoom"/>
+        <result column="play_room" property="playRoom"/>
+        <result column="parking" property="parking"/>
+        <result column="review_total" property="reviewTotal"/>
+        <result column="bookmark" property="bookmark"/>
+        <collection property="imagePaths" javaType="java.util.ArrayList" resultMap="findOneByIdImagesMap"/>
+    </resultMap>
+    <resultMap id="findOneByIdImagesMap" type="com.uahage.api.dto.ResPlaceRestaurantDetailDto">
+        <result column="image_path" property="imagePath"></result>
+    </resultMap>
+    <select id="findOneById" parameterType="java.lang.Long" resultMap="findOneByIdMap">
+        select
+            pr.id,
+            pr.name,
+            pr.address,
+            pr.phone,
+            prf.baby_bed,
+            prf.baby_chair,
+            prf.baby_menu,
+            prf.baby_tableware,
+            prf.stroller,
+            prf.diaper_change,
+            prf.meeting_room,
+            prf.nursing_room,
+            prf.play_room,
+            prf.parking,
+            pri.image_path,
+            ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
+            coalesce(prb.id, 0) as bookmark
+        from p_restaurants as pr
+                 left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
+                 left outer join (select * from p_restaurant_bookmarks prb where user_id= 132) prb on pr.id = prb.restaurant_id
+                 left outer join p_restaurant_images pri on pr.id = pri.restaurant_id
+        where pr.id = #{id}
+    </select>
+</mapper>

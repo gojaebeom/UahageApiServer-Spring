@@ -127,7 +127,6 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         try{
             ResShowUserDto resUserShowDto = userService.show(id);
-
             response.put("message", "회원 상세정보를 성공적으로 가져왔습니다.");
             response.put("statusCode", 200);
             response.put("user", resUserShowDto);
