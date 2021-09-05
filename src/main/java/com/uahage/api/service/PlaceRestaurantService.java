@@ -18,12 +18,12 @@ public class PlaceRestaurantService {
 
     private PlaceRestaurantRepository placeRestaurantRepository;
 
-    public List<ResPlaceRestaurantDto> findAllOrOptions(ReqPlaceRestaurantDto reqPlaceRestaurantDto){
-        return placeRestaurantRepository.findAllOrOptions(reqPlaceRestaurantDto);
+    public List<ResPlaceRestaurantDto> findAllByOptions(ReqPlaceRestaurantDto reqPlaceRestaurantDto){
+        return placeRestaurantRepository.findAllByOptions(reqPlaceRestaurantDto);
     }
 
-    public ResPlaceRestaurantDetailDto findOneByIdAndUserId(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto){
-        return placeRestaurantRepository.findOneByIdAndUserId(reqPlaceRestaurantDetailDto);
+    public ResPlaceRestaurantDetailDto findOneById(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto){
+        return placeRestaurantRepository.findOneByIdWithOptionalUserId(reqPlaceRestaurantDetailDto);
     }
 
 }

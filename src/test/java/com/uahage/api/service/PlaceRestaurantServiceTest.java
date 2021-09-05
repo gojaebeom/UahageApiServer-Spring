@@ -38,23 +38,13 @@ public class PlaceRestaurantServiceTest {
                 .playRoom(false)
                 .parking(false)
                 .build();
-        List<ResPlaceRestaurantDto> resPlaceRestaurantDtos = placeRestaurantService.findAllOrOptions(reqPlaceRestaurantDto);
+        List<ResPlaceRestaurantDto> resPlaceRestaurantDtos = placeRestaurantService.findAllByOptions(reqPlaceRestaurantDto);
         System.out.println(resPlaceRestaurantDtos);
     }
 
     @Test
     public void showTest(){
         ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto = new ReqPlaceRestaurantDetailDto(288L, 10L);
-
-        ResPlaceRestaurantDetailDto resPlaceRestaurantDetailDto  = placeRestaurantService.findOneByIdAndUserId(reqPlaceRestaurantDetailDto);
-        System.out.println(resPlaceRestaurantDetailDto);
+        placeRestaurantService.findOneById(reqPlaceRestaurantDetailDto);
     }
-
-    @Test
-    public void joinTest() {
-       PlaceRestaurant placeRestaurant = placeRestaurantRepository.findTestJoin(288L);
-        System.out.println(placeRestaurant);
-    }
-
-
 }

@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResPlaceRestaurantDetailDto {
-    private Integer id;
+    // 기본 레스토랑
+    private Long id;
     private String name;
     private String address;
     private String phone;
-    private Float reviewTotal;
-    private Long bookmark;
+    // 유아 관련 정보
     private Boolean babyBed;
     private Boolean babyChair;
     private Boolean babyMenu;
@@ -28,6 +28,17 @@ public class ResPlaceRestaurantDetailDto {
     private Boolean nursingRoom;
     private Boolean playRoom;
     private Boolean parking;
-    private List<String> images;
-    private List<HashMap<String ,String>> menus;
+    // 레스토랑 정보
+    private String startTime;
+    private String endTime;
+    private String closeDay;
+    private String memo;
+    // 북마크 상태
+    private Boolean isBookmarked;
+    // 리뷰 총점
+    private Float reviewTotal;
+    // 이미지 리스트
+    private List<HashMap<String, Object>> images;
+    // 매뉴 리스트
+    private List<HashMap<String ,Object>> menus;
 }

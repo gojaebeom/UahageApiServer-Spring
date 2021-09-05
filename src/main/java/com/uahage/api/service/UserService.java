@@ -138,7 +138,7 @@ public class UserService {
     }
 
     public ResShowUserDto show(Long userId) {
-        ResShowUserDto resShowUserDto = userRepository.findOneJoinWithUserDetailAndUserImageById(userId);
+        ResShowUserDto resShowUserDto = userRepository.findOneById(userId);
         if(resShowUserDto == null) throw new IllegalArgumentException("id와 일치하는 회원을 찾을 수 없습니다.");
         return resShowUserDto;
     }

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserRepository {
-    ResShowUserDto findOneJoinWithUserDetailAndUserImageById(Long userId);
+    ResShowUserDto findOneById(Long userId);
     User findByEmail(String email);
     Short countByNickname(String nickname);
     void save(User user);

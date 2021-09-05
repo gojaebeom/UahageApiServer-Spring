@@ -6,15 +6,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResPlaceRestaurantDto {
-    private Integer id;
+    private Long id;
     private String name;
     private String address;
     private String phone;
     private Float lat;
     private Float lon;
-    private Float reviewTotal;
-    private Long bookmark;
-    private String imagePath;
+    // 아기 관련 정보
     private Boolean babyBed;
     private Boolean babyChair;
     private Boolean babyMenu;
@@ -25,4 +23,10 @@ public class ResPlaceRestaurantDto {
     private Boolean nursingRoom;
     private Boolean playRoom;
     private Boolean parking;
+    // 썸네일
+    private String imagePath;
+    // 리뷰 토탈
+    private Float reviewTotal;
+    // 북마크 상태
+    private Boolean isBookmarked;
 }

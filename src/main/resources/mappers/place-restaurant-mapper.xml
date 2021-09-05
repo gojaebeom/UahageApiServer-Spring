@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.uahage.api.repository.PlaceRestaurantRepository">
-    <resultMap id="findAllOrOptionsMap" type="com.uahage.api.dto.ResPlaceRestaurantDto">
+    <!-- 레스토랑 리스트 -->
+    <resultMap id="restaurants" type="com.uahage.api.dto.ResPlaceRestaurantDto">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="address" property="address"/>
@@ -23,7 +24,7 @@
         <result column="review_total" property="reviewTotal"/>
         <result column="bookmark" property="bookmark"/>
     </resultMap>
-    <select id="findAllOrOptions" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDto" resultMap="findAllOrOptionsMap">
+    <select id="findAllByOptions" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDto" resultMap="restaurants">
         select
             -- 레스토랑 기본 정보
             pr.id, pr.name, pr.address, pr.phone,
@@ -34,7 +35,7 @@
             -- 레스토랑 리뷰 총점
             ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
             -- 북마크 상태
-            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = #{id} ) as isBookmarked
+            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = pr.id ) as isBookmarked
         from p_restaurants as pr
             left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
         <where>
@@ -54,7 +55,8 @@
         <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
     </select>
 
-    <resultMap id="findOneByIdMap" type="com.uahage.api.dto.ResPlaceRestaurantDetailDto">
+    <!-- 레스토랑 상세보기 -->
+    <resultMap id="restaurantDetail" type="com.uahage.api.dto.ResPlaceRestaurantDetailDto">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="address" property="address"/>
@@ -70,18 +72,22 @@
         <result column="play_room" property="playRoom"/>
         <result column="parking" property="parking"/>
         <result column="review_total" property="reviewTotal"/>
-        <result column="bookmark" property="bookmark"/>
-        <collection property="images" resultMap="findTestJoinImagesMap"/>
-        <collection property="menus" resultMap="findTestJoinMenuMap"/>
+        <result column="is_bookmarked" property="isBookmarked"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="close_day" property="closeDay"/>
+        <result column="memo" property="memo"/>
+        <collection property="images" resultMap="restaurantDetailImage"/>
+        <collection property="menus" resultMap="restaurantDetailMenu"/>
     </resultMap>
-    <resultMap id="findTestJoinImagesMap" type="java.lang.String">
+    <resultMap id="restaurantDetailImage" type="java.util.HashMap">
         <result column="image_path" property="imagePath"/>
     </resultMap>
-    <resultMap id="findTestJoinMenuMap" type="java.util.HashMap">
+    <resultMap id="restaurantDetailMenu" type="java.util.HashMap">
         <result column="menuName" property="name"/>
         <result column="price" property="price"/>
     </resultMap>
-    <select id="findOneByIdAndUserId" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDetailDto" resultMap="findOneByIdMap">
+    <select id="findOneByIdWithOptionalUserId" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDetailDto" resultMap="restaurantDetail">
         -- 레스토랑,카페 상세보기
         select
             -- 레스토랑 기본 정보
@@ -92,14 +98,17 @@
             pri.id, pri.image_path,
             -- 레스토랑 매뉴 ( N )
             prm.name as menuName, prm.price,
+            -- 레스토랑 정보,
+            prif.start_time, prif.end_time, prif.close_day, prif.memo,
             -- 리뷰 토탈
             ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
             -- 북마크 상태
-            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = #{id} ) as isBookmarked
+            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = #{id} ) as is_bookmarked
         from p_restaurants as pr
                  left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
                  left outer join p_restaurant_images pri on pr.id = pri.restaurant_id
                  left outer join p_restaurant_menu prm on pr.id = prm.restaurant_id
+                 left outer join p_restaurant_info prif on pr.id = prif.restaurant_id
         where pr.id = #{id};
     </select>
 </mapper>

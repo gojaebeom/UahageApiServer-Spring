@@ -10,9 +10,7 @@ import java.util.List;
 @Mapper
 public interface PlaceRestaurantRepository {
 
-    List<ResPlaceRestaurantDto> findAllOrOptions(ReqPlaceRestaurantDto reqPlaceRestaurantDto);
+    List<ResPlaceRestaurantDto> findAllByOptions(ReqPlaceRestaurantDto reqPlaceRestaurantDto);
 
-    ResPlaceRestaurantDetailDto findOneByIdAndUserId(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto);
-
-    PlaceRestaurant findTestJoin(Long id);
+    ResPlaceRestaurantDetailDto findOneByIdWithOptionalUserId(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto);
 }
