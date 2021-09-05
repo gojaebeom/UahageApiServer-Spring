@@ -13,8 +13,10 @@ import java.time.LocalDateTime;
 public class PlaceRestaurantImage {
 
     private Long id;
-    private String originPath;
-    private String previewPath;
+    private String imagePath;
+    private String previewImagePath;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private PlaceRestaurant restaurant;
 }

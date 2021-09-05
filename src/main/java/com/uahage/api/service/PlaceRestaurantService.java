@@ -1,8 +1,6 @@
 package com.uahage.api.service;
 
-import com.uahage.api.dto.ReqPlaceRestaurantDto;
-import com.uahage.api.dto.ResPlaceRestaurantDetailDto;
-import com.uahage.api.dto.ResPlaceRestaurantDto;
+import com.uahage.api.dto.*;
 import com.uahage.api.repository.PlaceRestaurantRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,8 @@ public class PlaceRestaurantService {
         return placeRestaurantRepository.findAllOrOptions(reqPlaceRestaurantDto);
     }
 
-    public HashMap<String, Object> findOneById(Long id){
-        return placeRestaurantRepository.findOneById(id);
+    public ResPlaceRestaurantDetailDto findOneByIdAndUserId(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto){
+        return placeRestaurantRepository.findOneByIdAndUserId(reqPlaceRestaurantDetailDto);
     }
+
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +21,7 @@ public class PlaceRestaurant {
     private Float lon;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private PlaceRestaurantFacility facility;
+    private List<PlaceRestaurantImage> images;
 }

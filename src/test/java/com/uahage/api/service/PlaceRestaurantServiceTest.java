@@ -1,20 +1,25 @@
 package com.uahage.api.service;
 
-import com.uahage.api.dto.ReqPlaceRestaurantDto;
-import com.uahage.api.dto.ResPlaceRestaurantDetailDto;
-import com.uahage.api.dto.ResPlaceRestaurantDto;
+import com.uahage.api.domain.PlaceRestaurant;
+import com.uahage.api.dto.*;
+import com.uahage.api.repository.PlaceRestaurantRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 
 @SpringBootTest
+@Transactional
 public class PlaceRestaurantServiceTest {
 
     @Autowired
     PlaceRestaurantService placeRestaurantService;
+
+    @Autowired
+    PlaceRestaurantRepository placeRestaurantRepository;
 
     @Test
     public void indexTest(){
@@ -39,7 +44,17 @@ public class PlaceRestaurantServiceTest {
 
     @Test
     public void showTest(){
-        HashMap<String, Object> maps  = placeRestaurantService.findOneById(288L);
-        System.out.println(maps);
+        ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto = new ReqPlaceRestaurantDetailDto(288L, 10L);
+
+        ResPlaceRestaurantDetailDto resPlaceRestaurantDetailDto  = placeRestaurantService.findOneByIdAndUserId(reqPlaceRestaurantDetailDto);
+        System.out.println(resPlaceRestaurantDetailDto);
     }
+
+    @Test
+    public void joinTest() {
+       PlaceRestaurant placeRestaurant = placeRestaurantRepository.findTestJoin(288L);
+        System.out.println(placeRestaurant);
+    }
+
+
 }
