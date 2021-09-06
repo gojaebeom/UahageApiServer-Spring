@@ -1,23 +1,19 @@
 package com.uahage.api.domain;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserDetail {
     private Long id;
-    private User user;
     private Short ageGroupType;
     private Character babyGender;
     private String babyBirthday;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @JsonIgnore
+    private User user;
 
     @Builder
     public UserDetail(Long id, User user, Short ageGroupType, Character babyGender, String babyBirthday) {

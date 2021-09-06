@@ -1,5 +1,6 @@
 package com.uahage.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,6 @@ public class PlaceRestaurantInfo {
     private String endTime;
     private String closeDay;
     private String memo;
+    @JsonIgnore
     private PlaceRestaurant restaurant;
 }

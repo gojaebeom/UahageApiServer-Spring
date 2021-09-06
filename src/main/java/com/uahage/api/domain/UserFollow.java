@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 public class UserFollow {
 
     private Long id;
+
     private User follower;
     private User following;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

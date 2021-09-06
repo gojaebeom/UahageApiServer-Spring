@@ -2,14 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.uahage.api.repository.PlaceRestaurantRepository">
-    <!-- 레스토랑 리스트 -->
-    <resultMap id="restaurants" type="com.uahage.api.dto.ResPlaceRestaurantDto">
+    <resultMap id="restaurant" type="com.uahage.api.domain.PlaceRestaurant">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="address" property="address"/>
         <result column="phone" property="phone"/>
         <result column="lat" property="lat"/>
         <result column="lon" property="lon"/>
+    </resultMap>
+    <resultMap id="restaurantFacility" type="com.uahage.api.domain.PlaceRestaurantFacility">
         <result column="baby_bed" property="babyBed"/>
         <result column="baby_chair" property="babyChair"/>
         <result column="baby_menu" property="babyMenu"/>
@@ -20,9 +21,28 @@
         <result column="nursing_room" property="nursingRoom"/>
         <result column="play_room" property="playRoom"/>
         <result column="parking" property="parking"/>
+    </resultMap>
+    <resultMap id="restaurantImage" type="com.uahage.api.domain.PlaceRestaurantImage">
         <result column="image_path" property="imagePath"/>
+    </resultMap>
+    <resultMap id="restaurantMenu" type="com.uahage.api.domain.PlaceRestaurantMenu">
+        <result column="menuName" property="name"/>
+        <result column="price" property="price"/>
+    </resultMap>
+    <resultMap id="restaurantInfo" type="com.uahage.api.domain.PlaceRestaurantInfo">
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="close_day" property="closeDay"/>
+        <result column="memo" property="memo"/>
+    </resultMap>
+
+    <!-- 레스토랑 리스트 -->
+    <resultMap id="restaurants" type="com.uahage.api.dto.ResPlaceRestaurantDto">
         <result column="review_total" property="reviewTotal"/>
         <result column="bookmark" property="bookmark"/>
+        <association property="restaurant" resultMap="restaurant"/>
+        <association property="facility" resultMap="restaurantFacility"/>
+        <association property="image" resultMap="restaurantImage"/>
     </resultMap>
     <select id="findAllByOptions" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDto" resultMap="restaurants">
         select
@@ -57,35 +77,14 @@
 
     <!-- 레스토랑 상세보기 -->
     <resultMap id="restaurantDetail" type="com.uahage.api.dto.ResPlaceRestaurantDetailDto">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="address" property="address"/>
-        <result column="phone" property="phone"/>
-        <result column="baby_bed" property="babyBed"/>
-        <result column="baby_chair" property="babyChair"/>
-        <result column="baby_menu" property="babyMenu"/>
-        <result column="baby_tableware" property="babyTableware"/>
-        <result column="stroller" property="stroller"/>
-        <result column="diaper_change" property="diaperChange"/>
-        <result column="meeting_room" property="meetingRoom"/>
-        <result column="nursing_room" property="nursingRoom"/>
-        <result column="play_room" property="playRoom"/>
-        <result column="parking" property="parking"/>
         <result column="review_total" property="reviewTotal"/>
         <result column="is_bookmarked" property="isBookmarked"/>
-        <result column="start_time" property="startTime"/>
-        <result column="end_time" property="endTime"/>
-        <result column="close_day" property="closeDay"/>
-        <result column="memo" property="memo"/>
-        <collection property="images" resultMap="restaurantDetailImage"/>
-        <collection property="menus" resultMap="restaurantDetailMenu"/>
-    </resultMap>
-    <resultMap id="restaurantDetailImage" type="java.util.HashMap">
-        <result column="image_path" property="imagePath"/>
-    </resultMap>
-    <resultMap id="restaurantDetailMenu" type="java.util.HashMap">
-        <result column="menuName" property="name"/>
-        <result column="price" property="price"/>
+
+        <association property="restaurant" resultMap="restaurant"/>
+        <association property="facility" resultMap="restaurantFacility"/>
+        <association property="info" resultMap="restaurantInfo"/>
+        <collection property="images" resultMap="restaurantImage"/>
+        <collection property="menus" resultMap="restaurantMenu"/>
     </resultMap>
     <select id="findOneByIdWithOptionalUserId" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDetailDto" resultMap="restaurantDetail">
         -- 레스토랑,카페 상세보기

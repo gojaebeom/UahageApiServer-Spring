@@ -1,16 +1,15 @@
 package com.uahage.api.dto;
 
+import com.uahage.api.domain.User;
+import com.uahage.api.domain.UserDetail;
+import com.uahage.api.domain.UserImage;
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResShowUserDto {
-
-    private Long id;
-    private String nickname;
-    private String imagePath;
-    private Short ageGroupType;
-    private Character babyGender;
-    private String babyBirthday;
+    private User user;
+    private UserDetail detail;
+    private UserImage image;
 }

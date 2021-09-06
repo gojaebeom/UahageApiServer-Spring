@@ -3,15 +3,26 @@
 
 <mapper namespace="com.uahage.api.repository.UserRepository">
 
-    <resultMap id="userDetail" type="com.uahage.api.dto.ResShowUserDto">
+    <resultMap id="user" type="com.uahage.api.domain.User">
         <id column="id" property="id"/>
         <result column="nickname" property="nickname"/>
-        <result column="image_path" property="imagePath"/>
+    </resultMap>
+    <resultMap id="userDetail" type="com.uahage.api.domain.UserDetail">
         <result column="age_group_type" property="ageGroupType"/>
         <result column="baby_birthday" property="babyBirthday"/>
         <result column="baby_gender" property="babyGender"/>
     </resultMap>
-    <select id="findOneById" parameterType="java.lang.Long" resultMap="userDetail">
+    <resultMap id="userImage" type="com.uahage.api.domain.UserImage">
+        <result column="image_path" property="imagePath"/>
+    </resultMap>
+
+
+    <resultMap id="findOneById" type="com.uahage.api.dto.ResShowUserDto">
+        <association property="user" resultMap="user"/>
+        <association property="detail" resultMap="userDetail"/>
+        <association property="image" resultMap="userImage"/>
+    </resultMap>
+    <select id="findOneById" parameterType="java.lang.Long" resultMap="findOneById">
         select u.id, u.nickname, ud.age_group_type, ud.baby_birthday, ud.baby_gender, ui.image_path
         from users u
              left join user_details ud on u.id = ud.user_id
@@ -47,7 +58,7 @@
         <set>
             <if test="nickname != null">nickname=#{nickname},</if>
         </set>
-        where id = 132;
+        where id = #{id};
     </update>
 
     <delete id="destroyById" parameterType="java.lang.Long">

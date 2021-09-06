@@ -1,31 +1,24 @@
 package com.uahage.api.domain;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class User {
     private Long id;
     private String email;
     private String nickname;
-    private String token;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    private UserDetail userDetail;
-    private UserImage userImage;
+    @JsonIgnore
+    private String refreshToken;
 
     @Builder
-    public User(Long id, String email, String nickname, String token) {
+    public User(Long id, String email, String nickname, String refreshToken) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
-        this.token = token;
+        this.refreshToken = refreshToken;
     }
 }

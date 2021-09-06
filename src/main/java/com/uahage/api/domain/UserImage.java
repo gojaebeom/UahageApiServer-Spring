@@ -1,5 +1,6 @@
 package com.uahage.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserImage {
     private Long id;
-    private User user;
     private String imagePath;
     private String previewImagePath;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @JsonIgnore
+    private User user;
 
     @Builder
     public UserImage(Long id, User user, String imagePath, String previewImagePath) {

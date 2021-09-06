@@ -1,5 +1,6 @@
 package com.uahage.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceRestaurantBookmark {
-
     private Long id;
+    @JsonIgnore
     private User user;
+    @JsonIgnore
     private PlaceRestaurant restaurant;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

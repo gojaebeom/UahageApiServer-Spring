@@ -1,19 +1,15 @@
 package com.uahage.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceRestaurantFacility {
-
     private Long id;
-    private PlaceRestaurant restaurant;
     private Boolean babyMenu;
     private Boolean babyBed;
     private Boolean babyTableware;
@@ -22,7 +18,8 @@ public class PlaceRestaurantFacility {
     private Boolean stroller;
     private Boolean meetingRoom;
     private Boolean nursingRoom;
+    private Boolean playRoom;
     private Boolean parking;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @JsonIgnore
+    private PlaceRestaurant restaurant;
 }

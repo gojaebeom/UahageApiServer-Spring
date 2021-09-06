@@ -1,5 +1,6 @@
 package com.uahage.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceRestaurantReviewImage {
-
     private Long id;
-    private PlaceRestaurant restaurant;
     private String imagePath;
     private String previewImagePath;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @JsonIgnore
+    private PlaceRestaurant restaurant;
 }
