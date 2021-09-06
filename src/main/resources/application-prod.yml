@@ -1,13 +1,6 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://uahage2.c7qbk7qns6ot.ap-northeast-2.rds.amazonaws.com:5432/uahage_dev_v2
+    url: jdbc:postgresql://uahage2.c7qbk7qns6ot.ap-northeast-2.rds.amazonaws.com:5432/uahage_prod
     username: postgres
     password: hohocom!
-
-log4jdbc:
-  spylogdelegator:
-    name: net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
-  dump:
-    sql:
-      maxlinelength: 0

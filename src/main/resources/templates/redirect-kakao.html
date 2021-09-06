@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        window.onload = async () => {
+            console.log(location.href);
+
+            const code = location.href.split("code=")[1];
+            console.log(code);
+
+            const formData = new URLSearchParams();
+            console.log(formData);
+            formData.append('grant_type', 'authorization_code');
+            formData.append('client_id', "7db1131224309e5f7ecc9df4dc697853");
+            formData.append('redirect_uri', "http://localhost:8080/auth/login/kakao");
+            formData.append('code', code);
+
+            const kakaoRes = await fetch("https://kauth.kakao.com/oauth/token", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded;charset=utf-8"
+                },
+                body: formData
+            })
+            .then(data => data.json())
+            .then(data => data)
+            .catch(err => {
+                throw new Error(err);
+            })
+
+            console.log(kakaoRes);
+        }
+    </script>
+</body>
+</html>

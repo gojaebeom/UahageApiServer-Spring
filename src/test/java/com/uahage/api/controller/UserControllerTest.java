@@ -16,14 +16,14 @@ class UserControllerTest {
     @Test
     public void JoinWithKakaoTest() throws Exception {
         ReqJoinDto joinDto = ReqJoinDto.builder()
-                .nickname("테스트아이디3")
-                .ageGroupType((short)2)
-                .babyGender('M')
-                .babyBirthday("2020년 8월 13일")
+                .nickname("helloWorld")
+//                .ageGroupType((short)2)
+//                .babyGender('M')
+//                .babyBirthday("2020년 8월 13일")
                 .build();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        final String token = "oe3jCjbQwzuuXXLzETrTOuCIVMOMfpdIDHpEGQopcJ8AAAF7lOWvRA";
+        final String token = "skRgFdriRZcAOGwWaGa9JJV4b7ZVTZ9HqIkqNworDNMAAAF7uZfP0Q";
         request.addHeader("Authorization", "bearer ".concat(token));
 
         ResponseEntity responseEntity = userController.joinWithKakao(request, joinDto);

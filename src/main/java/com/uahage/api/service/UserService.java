@@ -33,10 +33,12 @@ public class UserService {
 
     public ResJoinDto join(ReqJoinDto reqJoinDto) {
         User user = userRepository.findByEmail(reqJoinDto.getEmail());
+        log.info("기존 회원 유무 확인");
         System.out.println(user);
 
         if(user == null){
             // 회원 가입
+            log.info("회원가입 진행");
             Short duplicatedCount = userRepository.countByNickname(reqJoinDto.getNickname());
             if(duplicatedCount > 0){
                 throw new IllegalArgumentException("닉네임이 중복되었습니다.");
@@ -49,7 +51,12 @@ public class UserService {
             userDetailRepository.save(userDetail);
         }
 
+        log.info("로그인 진행");
+        System.out.println(user);
         String act = tokenService.createAct(user.getId());
+
+        log.info("엑세스 토큰 발급 완료");
+        System.out.println(act);
 
         return ResJoinDto.builder()
                 .accessToken(act)

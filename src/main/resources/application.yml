@@ -23,6 +23,9 @@ cloud:
     stack:
       auto: false
 
+# My
+kakao-rest-api-key: 7db1131224309e5f7ecc9df4dc697853
+
 ---
 spring:
   profiles:

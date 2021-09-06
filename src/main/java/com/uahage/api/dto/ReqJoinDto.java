@@ -23,6 +23,12 @@ public class ReqJoinDto {
     }
 
     public User toUser() {
+        if(this.email == null)
+            throw new IllegalArgumentException("회원 이메일이 입력되지 않았습니다.");
+
+        if(this.nickname == null)
+            throw new IllegalArgumentException("회원 닉네임이 입력되지 않았습니다.");
+
         return User.builder()
                 .email(this.email)
                 .nickname(this.nickname)
@@ -30,6 +36,12 @@ public class ReqJoinDto {
     }
 
     public UserDetail toUserDetail(User user) {
+        if(this.ageGroupType == null)
+            this.ageGroupType = 6;
+
+        if(this.babyGender == null)
+            this.babyGender = 'M';
+
         return UserDetail.builder()
                 .user(user)
                 .ageGroupType(this.ageGroupType)

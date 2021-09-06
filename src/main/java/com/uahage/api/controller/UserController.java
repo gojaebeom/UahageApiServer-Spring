@@ -29,7 +29,6 @@ public class UserController {
     public ResponseEntity<?> joinWithKakao(HttpServletRequest request, ReqJoinDto reqJoinDto) throws Exception {
         String accessTokenString = request.getHeader("Authorization");
         String email;
-
         Map<String, Object> response = new HashMap<>();
         try{
             email = oauth2LoginService.verifyWithKakaoTokenThenGetEmail(accessTokenString);
@@ -37,6 +36,28 @@ public class UserController {
             ResJoinDto resJoinDto = userService.join(reqJoinDto);
 
             response.put("message","로그인이 정상적으로 처리되었습니다.");
+            response.put("statusCode", 200);
+            response.put("data", resJoinDto);
+            return ResponseEntity.ok(response);
+        }catch(Exception e){
+            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
+            response.put("message", message);
+            response.put("statusCode", 400);
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/naver-login")
+    public ResponseEntity<?> joinWithNaver(HttpServletRequest request, ReqJoinDto reqJoinDto) throws Exception {
+        String accessTokenString = request.getHeader("Authorization");
+        String email;
+        Map<String, Object> response = new HashMap<>();
+        try{
+            email = oauth2LoginService.verifyWithNaverTokenThenGetEmail(accessTokenString);
+            reqJoinDto.setEmail(email);
+            ResJoinDto resJoinDto = userService.join(reqJoinDto);
+
+            response.put("message", "로그인이 정상적으로 처리되었습니다.");
             response.put("statusCode", 200);
             response.put("data", resJoinDto);
             return ResponseEntity.ok(response);
