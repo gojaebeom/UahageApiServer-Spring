@@ -14,7 +14,7 @@ class Oauth2LoginServiceTest {
 
     @Test
     public void oAuthGetInfoTest() throws Exception {
-        String kakaoEmail = oauth2LoginService.verifyWithKakaoTokenThenGetEmail("bearer skRgFdriRZcAOGwWaGa9JJV4b7ZVTZ9HqIkqNworDNMAAAF7uZfP0Q");
-        System.out.println(kakaoEmail);
+//        String kakaoEmail = oauth2LoginService.verifyWithKakaoTokenThenGetEmail("bearer skRgFdriRZcAOGwWaGa9JJV4b7ZVTZ9HqIkqNworDNMAAAF7uZfP0Q");
+//        System.out.println(kakaoEmail);
     }
 }

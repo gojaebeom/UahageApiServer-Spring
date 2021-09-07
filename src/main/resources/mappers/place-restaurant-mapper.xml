@@ -47,7 +47,7 @@
     <select id="findAllByOptions" parameterType="com.uahage.api.dto.ReqPlaceRestaurantDto" resultMap="restaurants">
         select
             -- 레스토랑 기본 정보
-            pr.id, pr.name, pr.address, pr.phone,
+            pr.id, pr.name, pr.address, pr.phone, pr.lat, pr.lon,
             -- 레스토랑 유아 관련 정보
             prf.baby_bed,prf.baby_chair,prf.baby_menu,prf.baby_tableware,prf.stroller,prf.diaper_change,prf.meeting_room,prf.nursing_room,prf.play_room,prf.parking,
             -- 레스토랑 이미지( 한개만 )
@@ -59,7 +59,6 @@
         from p_restaurants as pr
             left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
         <where>
-            <if test="userId != null and isBookmarked == true">prb.user_id = #{userId}</if>
             <if test="babyBed == true">and prf.baby_bed = true</if>
             <if test="babyChair == true">and prf.baby_chair = true</if>
             <if test="babyMenu == true">and prf.baby_menu = true</if>
@@ -71,8 +70,11 @@
             <if test="playRoom == true">and prf.play_room = true</if>
             <if test="parking == true">and prf.parking = true</if>
         </where>
-        <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
-        <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
+        <if test="type == 'map'">where ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat})) <![CDATA[ <= ]]> 2000 </if>
+        <if test="type != 'map'">
+            <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
+            <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
+        </if>
     </select>
 
     <!-- 레스토랑 상세보기 -->

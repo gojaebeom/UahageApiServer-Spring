@@ -20,6 +20,7 @@ public class ReqPlaceRestaurantDto {
     private Boolean parking;
     private Boolean isBookmarked;
     private Integer pageNumber;
+    private String type;
 
     public void setPageNumber(Integer pageNumber) {
         // 1 : 1 ~ 10
@@ -29,7 +30,7 @@ public class ReqPlaceRestaurantDto {
     }
 
     @Builder
-    public ReqPlaceRestaurantDto(Float lat, Float lon, Long userId, Boolean babyBed, Boolean babyChair, Boolean babyMenu, Boolean babyTableware, Boolean stroller, Boolean diaperChange, Boolean meetingRoom, Boolean nursingRoom, Boolean playRoom, Boolean parking, Boolean isBookmarked, Integer pageNumber) {
+    public ReqPlaceRestaurantDto(Float lat, Float lon, Long userId, Boolean babyBed, Boolean babyChair, Boolean babyMenu, Boolean babyTableware, Boolean stroller, Boolean diaperChange, Boolean meetingRoom, Boolean nursingRoom, Boolean playRoom, Boolean parking, Boolean isBookmarked, Integer pageNumber, String type) {
         this.lat = lat;
         this.lon = lon;
         this.userId = userId;
@@ -45,5 +46,6 @@ public class ReqPlaceRestaurantDto {
         this.parking = parking;
         this.isBookmarked = isBookmarked;
         this.pageNumber = pageNumber;
+        this.type = type;
     }
 }

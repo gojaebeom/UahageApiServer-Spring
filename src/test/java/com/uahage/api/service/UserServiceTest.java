@@ -30,37 +30,37 @@ class UserServiceTest {
 
     @Test
     public void joinWithOauthTest(){
-        ReqJoinDto joinDto = ReqJoinDto.builder()
-                .email("KAKAO.test450@gmail.com")
-                .nickname("테스트아이디671")
-                .ageGroupType((short)2)
-                .babyGender('M')
-                .babyBirthday("2020년 8월 13일")
-                .build();
-
-        ResJoinDto resJoinDto = userService.join(joinDto);
-        System.out.println(resJoinDto);
+//        ReqJoinDto joinDto = ReqJoinDto.builder()
+//                .email("KAKAO.test450@gmail.com")
+//                .nickname("테스트아이디671")
+//                .ageGroupType((short)2)
+//                .babyGender('M')
+//                .babyBirthday("2020년 8월 13일")
+//                .build();
+//
+//        ResJoinDto resJoinDto = userService.join(joinDto);
+//        System.out.println(resJoinDto);
     }
 
     @Test
     public void editTest() throws Exception {
-        File file = new File("C:/images/test.jpg");
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
-        List<MultipartFile> files = new ArrayList<>();
-        files.add(multipartFile);
-
-        ReqEditUserDto reqEditUserDto = ReqEditUserDto.builder()
-                .id(92L)
-                .images(files)
-                .imageInit('N')
-                .ageGroupType((short) 3)
-                .babyBirthday("2020-06-21")
-                .babyGender('A')
-                .nickname("안녕봇")
-                .build();
-
-        userService.edit(reqEditUserDto);
+//        File file = new File("C:/images/test.jpg");
+//        FileInputStream input = new FileInputStream(file);
+//        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
+//        List<MultipartFile> files = new ArrayList<>();
+//        files.add(multipartFile);
+//
+//        ReqEditUserDto reqEditUserDto = ReqEditUserDto.builder()
+//                .id(92L)
+//                .images(files)
+//                .imageInit('N')
+//                .ageGroupType((short) 3)
+//                .babyBirthday("2020-06-21")
+//                .babyGender('A')
+//                .nickname("안녕봇")
+//                .build();
+//
+//        userService.edit(reqEditUserDto);
     }
 
     @Test
@@ -86,8 +86,8 @@ class UserServiceTest {
 
     @Test
     public void showTest(){
-        final Long USER_ID = 92L;
-        ResShowUserDto resUserShowDto = userService.show(USER_ID);
-        System.out.println(resUserShowDto);
+//        final Long USER_ID = 92L;
+//        ResShowUserDto resUserShowDto = userService.show(USER_ID);
+//        System.out.println(resUserShowDto);
     }
 }
