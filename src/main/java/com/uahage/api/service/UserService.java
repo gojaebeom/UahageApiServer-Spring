@@ -104,7 +104,7 @@ public class UserService {
             userRepository.edit(user);
 
         UserDetail userDetail = reqEditUserDto.toUserDetail(user);
-        if(userDetail.getAgeGroupType() != null || userDetail.getBabyBirthday() != null || userDetail.getBabyGender() != null)
+        if(userDetail.getBabyBirthday() != null || userDetail.getBabyGender() != null)
             userDetailRepository.edit(userDetail);
     }
 

@@ -12,5 +12,7 @@ public interface PlaceRestaurantRepository {
 
     List<ResPlaceRestaurantDto> findAllByOptions(ReqPlaceRestaurantDto reqPlaceRestaurantDto);
 
+    List<HashMap<String, Object>> findAllByOptions2(ReqPlaceRestaurantDto reqPlaceRestaurantDto);
+
     ResPlaceRestaurantDetailDto findOneByIdWithOptionalUserId(ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto);
 }

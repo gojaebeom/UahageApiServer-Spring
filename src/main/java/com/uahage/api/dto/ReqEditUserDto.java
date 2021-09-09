@@ -30,7 +30,6 @@ public class ReqEditUserDto {
     public UserDetail toUserDetail(User user){
         return UserDetail.builder()
                 .user(user)
-                .ageGroupType(this.ageGroupType)
                 .babyGender(this.babyGender)
                 .babyBirthday(this.babyBirthday)
                 .build();

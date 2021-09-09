@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlaceRestaurant {
     private Long id;
+    private Long categoryId;
     private String name;
     private String address;
     private String phone;

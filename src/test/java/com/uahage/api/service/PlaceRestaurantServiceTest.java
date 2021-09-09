@@ -43,6 +43,16 @@ public class PlaceRestaurantServiceTest {
     }
 
     @Test
+    public void indexTest2(){
+        ReqPlaceRestaurantDto reqPlaceRestaurantDto = ReqPlaceRestaurantDto.builder()
+                .lat(35.1449589F)
+                .lon(126.9216603F)
+                .build();
+        List<HashMap<String, Object>> results = placeRestaurantRepository.findAllByOptions2(reqPlaceRestaurantDto);
+        System.out.println(results);
+    }
+
+    @Test
     public void showTest(){
         ReqPlaceRestaurantDetailDto reqPlaceRestaurantDetailDto = new ReqPlaceRestaurantDetailDto(288L, 10L);
         placeRestaurantService.findOneById(reqPlaceRestaurantDetailDto);

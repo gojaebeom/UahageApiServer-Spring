@@ -44,7 +44,6 @@ public class ReqJoinDto {
 
         return UserDetail.builder()
                 .user(user)
-                .ageGroupType(this.ageGroupType)
                 .babyBirthday(this.babyBirthday)
                 .babyGender(this.babyGender)
                 .build();
