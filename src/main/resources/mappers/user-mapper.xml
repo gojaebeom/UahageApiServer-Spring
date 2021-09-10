@@ -1,67 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.uahage.api.repository.UserRepository">
-
-    <resultMap id="user" type="com.uahage.api.domain.User">
+<mapper namespace="com.uahage.api.mapper.UserMapper">
+    <resultMap id="user" type="com.uahage.api.dto.UserShowResponse$User">
         <id column="id" property="id"/>
         <result column="nickname" property="nickname"/>
-    </resultMap>
-    <resultMap id="userDetail" type="com.uahage.api.domain.UserDetail">
         <result column="age_group_type" property="ageGroupType"/>
+        <association property="userImage" resultMap="userImage"/>
+        <collection property="userBabies" resultMap="userBaby"/>
+    </resultMap>
+    <resultMap id="userBaby" type="com.uahage.api.dto.UserShowResponse$UserBaby">
         <result column="baby_birthday" property="babyBirthday"/>
         <result column="baby_gender" property="babyGender"/>
     </resultMap>
-    <resultMap id="userImage" type="com.uahage.api.domain.UserImage">
+    <resultMap id="userImage" type="com.uahage.api.dto.UserShowResponse$UserImage">
         <result column="image_path" property="imagePath"/>
     </resultMap>
 
-
-    <resultMap id="findOneById" type="com.uahage.api.dto.ResShowUserDto">
+    <resultMap id="findOneByIdMap" type="com.uahage.api.dto.UserShowResponse">
         <association property="user" resultMap="user"/>
-        <association property="detail" resultMap="userDetail"/>
-        <association property="image" resultMap="userImage"/>
     </resultMap>
-    <select id="findOneById" parameterType="java.lang.Long" resultMap="findOneById">
-        select u.id, u.nickname, ud.age_group_type, ud.baby_birthday, ud.baby_gender, ui.image_path
+    <select id="findOneById" parameterType="java.lang.Long" resultMap="findOneByIdMap">
+        select
+            u.id, u.nickname, u.age_group_type,
+            ub.baby_birthday, ub.baby_gender
         from users u
-             left join user_details ud on u.id = ud.user_id
-             left join user_images ui on u.id = ui.user_id
-        where u.id = #{id}
-        order by ui.id desc
-        limit 1;
+            left outer join user_babies ub on u.id = ub.user_id
+        where u.id = #{id};
     </select>
-
-    <select id="findById" resultType="com.uahage.api.domain.User">
-        select * from users where id = #{id};
-    </select>
-
-    <select id="findByEmail" parameterType="java.lang.String" resultType="User">
-        select * from users where email = #{email};
-    </select>
-
-    <select id="countByNickname" parameterType="java.lang.String" resultType="java.lang.Short">
-        select count(id) from users where nickname = #{nickname};
-    </select>
-
-    <select id="countByEmail" parameterType="java.lang.String" resultType="java.lang.Short">
-        select count(id) from users where email = #{email};
-    </select>
-
-    <insert id="save" parameterType="com.uahage.api.domain.User" useGeneratedKeys="true" keyProperty="id">
-        insert into users(email, nickname)
-        values(#{email}, #{nickname});
-    </insert>
-
-    <update id="edit" parameterType="com.uahage.api.domain.User">
-        update users
-        <set>
-            <if test="nickname != null">nickname=#{nickname},</if>
-        </set>
-        where id = #{id};
-    </update>
-
-    <delete id="destroyById" parameterType="java.lang.Long">
-        delete from users where id = #{id};
-    </delete>
 </mapper>
