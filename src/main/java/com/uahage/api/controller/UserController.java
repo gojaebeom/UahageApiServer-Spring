@@ -1,12 +1,8 @@
 package com.uahage.api.controller;
 
-import com.uahage.api.dto.ReqEditUserDto;
-import com.uahage.api.dto.ReqJoinDto;
-import com.uahage.api.dto.ResJoinDto;
-import com.uahage.api.dto.ResShowUserDto;
+import com.uahage.api.dto.*;
 import com.uahage.api.service.Oauth2LoginService;
 import com.uahage.api.service.UserService;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,138 +22,75 @@ public class UserController {
     private Oauth2LoginService oauth2LoginService;
 
     @PostMapping("/kakao-login")
-    public ResponseEntity<?> joinWithKakao(HttpServletRequest request, ReqJoinDto reqJoinDto) throws Exception {
+    public ResponseEntity<?> joinWithKakao(HttpServletRequest request, UserJoinRequest joinRequest) throws Exception {
         String accessTokenString = request.getHeader("Authorization");
-        String email;
-        Map<String, Object> response = new HashMap<>();
-        try{
-            email = oauth2LoginService.verifyWithKakaoTokenThenGetEmail(accessTokenString);
-            reqJoinDto.setEmail(email);
-            ResJoinDto resJoinDto = userService.join(reqJoinDto);
-
-            response.put("message","로그인이 정상적으로 처리되었습니다.");
-            response.put("statusCode", 200);
-            response.put("data", resJoinDto);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+        String email = oauth2LoginService.verifyWithKakaoTokenThenGetEmail(accessTokenString);
+        return join(joinRequest, email);
     }
 
     @PostMapping("/naver-login")
-    public ResponseEntity<?> joinWithNaver(HttpServletRequest request, ReqJoinDto reqJoinDto) throws Exception {
+    public ResponseEntity<?> joinWithNaver(HttpServletRequest request, UserJoinRequest joinRequest) throws Exception {
         String accessTokenString = request.getHeader("Authorization");
-        String email;
-        Map<String, Object> response = new HashMap<>();
-        try{
-            email = oauth2LoginService.verifyWithNaverTokenThenGetEmail(accessTokenString);
-            reqJoinDto.setEmail(email);
-            ResJoinDto resJoinDto = userService.join(reqJoinDto);
+        String email = oauth2LoginService.verifyWithNaverTokenThenGetEmail(accessTokenString);
+        return join(joinRequest, email);
+    }
 
-            response.put("message", "로그인이 정상적으로 처리되었습니다.");
-            response.put("statusCode", 200);
-            response.put("data", resJoinDto);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+    private ResponseEntity<?> join(UserJoinRequest joinRequest, String email) {
+        joinRequest.setEmail(email);
+        UserJoinResponse joinResponse = userService.join(joinRequest);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message","로그인이 정상적으로 처리되었습니다.");
+        response.put("statusCode", 200);
+        response.put("data", joinResponse);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> edit(ReqEditUserDto reqEditUserDto) throws Exception {
-        System.out.println(reqEditUserDto);
-        Map<String, Object> response = new HashMap<>();
-        try{
-            userService.edit(reqEditUserDto);
+    public ResponseEntity<?> edit(UserEditRequest userEditRequest) throws Exception {
+        userService.edit(userEditRequest);
 
-            response.put("message","회원 수정이 정상적으로 처리되었습니다.");
-            response.put("statusCode", 200);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("message","회원 수정이 정상적으로 처리되었습니다.");
+        response.put("statusCode", 200);
+        return ResponseEntity.ok(response);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(@PathVariable Long id) throws Exception {
-        Map<String, Object> response = new HashMap<>();
-        try{
-            userService.destroy(id);
 
-            response.put("message","회원 탈퇴가 정상적으로 처리되었습니다.");
-            response.put("statusCode", 200);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> destroy(UserDestroyRequest userDestroyRequest) throws Exception {
+        userService.destroy(userDestroyRequest);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message","회원 탈퇴가 정상적으로 처리되었습니다.");
+        response.put("statusCode", 200);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/verify-duplicate-nickname/{nickname}")
-    public ResponseEntity verifyDuplicateNickname(@PathVariable String nickname) {
+    public ResponseEntity<?> verifyDuplicateNickname(UserVerifyDuplicateNicknameRequest userVerifyDuplicateNicknameRequest) {
+        userService.verifyDuplicateNickname(userVerifyDuplicateNicknameRequest);
         Map<String, Object> response = new HashMap<>();
-        try{
-            Boolean result = userService.verifyDuplicateNickname(nickname);
-
-            String message = result ? "사용가능한 닉네임 입니다." : "중복된 닉네임 입니다";
-
-            response.put("message", message);
-            response.put("statusCode", 200);
-            response.put("available", result);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+        response.put("message","사용가능한 닉네임 입니다.");
+        response.put("statusCode", 200);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/verify-duplicate-email/{email}")
-    public ResponseEntity verifyDuplicateEmail(@PathVariable String email) {
+    public ResponseEntity<?> verifyDuplicateEmail(UserVerifyDuplicateEmailRequest userVerifyDuplicateEmailRequest) {
+        userService.verifyDuplicateEmail(userVerifyDuplicateEmailRequest);
         Map<String, Object> response = new HashMap<>();
-        try{
-            Boolean result = userService.verifyDuplicateEmail(email);
-
-            String message = result ? "사용가능한 이메일 입니다." : "중복된 이메일 입니다";
-
-            response.put("message", message);
-            response.put("statusCode", 200);
-            response.put("available", result);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+        response.put("message","사용가능한 이메일 입니다.");
+        response.put("statusCode", 200);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        UserShowResponse userShowResponse = userService.show(id);
         Map<String, Object> response = new HashMap<>();
-        try{
-            ResShowUserDto resUserShowDto = userService.show(id);
-            response.put("message", "회원 상세정보를 성공적으로 가져왔습니다.");
-            response.put("statusCode", 200);
-            response.put("user", resUserShowDto);
-            return ResponseEntity.ok(response);
-        }catch(Exception e){
-
-            String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
-            response.put("message", message);
-            response.put("statusCode", 400);
-            return ResponseEntity.badRequest().body(response);
-        }
+        response.put("message","회원 상세정보를 성공적으로 가져왔습니다.");
+        response.put("data", userShowResponse);
+        response.put("statusCode", 200);
+        return ResponseEntity.ok(response);
     }
 }

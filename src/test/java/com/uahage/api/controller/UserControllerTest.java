@@ -1,59 +1,99 @@
 package com.uahage.api.controller;
 
-import com.uahage.api.dto.ReqJoinDto;
+import com.amazonaws.util.IOUtils;
+import com.uahage.api.dto.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserControllerTest {
 
     @Autowired
-    UserController userController;
+    private UserController userController;
 
     @Test
-    public void JoinWithKakaoTest() throws Exception {
-        ReqJoinDto joinDto = ReqJoinDto.builder()
-                .nickname("gojaebeom")
-                .ageGroupType((short)2)
-                .babyGender('M')
-                .babyBirthday("2020년 8월 13일")
-                .build();
+    public void joinTest() throws Exception {
+        List<Character> babyGenders = new ArrayList<>();
+        babyGenders.add('M');
+        babyGenders.add('F');
+        List<String> babyBirthDays = new ArrayList<>();
+        babyBirthDays.add("2025-05-15");
+        babyBirthDays.add("2025-06-21");
+
+        UserJoinRequest joinRequest = new UserJoinRequest(null,"nickname", (short)6, babyGenders, babyBirthDays);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        final String token = "80t6UM90s-yD8zYoxUsyilpd36MYmuhpl8BUqAo9dJkAAAF7u-NZZQ";
+        final String token = "OXMdy62ymfxRc6gBF2USv10XcJedL6lMY8DAkgopcBMAAAF7zTGfDA";
         request.addHeader("Authorization", "bearer ".concat(token));
 
-        ResponseEntity responseEntity = userController.joinWithKakao(request, joinDto);
-        System.out.println(responseEntity);
+        ResponseEntity responseEntity = userController.joinWithKakao(request, joinRequest);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        assertTrue(result.get("statusCode").toString().equals("200"));
+    }
+
+    @Test
+    public void editTest() throws Exception {
+        File file = new File("C:/images/test.jpg");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(multipartFile);
+
+        List<Character> babyGenders = new ArrayList<>();
+        babyGenders.add('M');
+        babyGenders.add('F');
+        List<String> babyBirthDays = new ArrayList<>();
+        babyBirthDays.add("2025-05-15");
+        babyBirthDays.add("2025-06-21");
+
+        UserEditRequest userEditRequest = new UserEditRequest(11L,files,'Y',"nickname",(short)3, babyGenders, babyBirthDays);
+        ResponseEntity responseEntity = userController.edit(userEditRequest);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        assertTrue(result.get("statusCode").toString().equals("200"));
     }
 
     @Test
     public void destroyTest() throws Exception {
-        ResponseEntity responseEntity = userController.destroy(148l);
-        System.out.println(responseEntity);
+        UserDestroyRequest userDestroyRequest = new UserDestroyRequest(11L);
+        ResponseEntity responseEntity = userController.destroy(userDestroyRequest);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        assertTrue(result.get("statusCode").toString().equals("200"));
     }
 
     @Test
-    public void verifyDuplicateNickname() {
-        final String NICKNAME = "미횬";
-        ResponseEntity responseEntity = userController.verifyDuplicateNickname(NICKNAME);
-        System.out.println(responseEntity);
+    public void verifyDuplicateNicknameTest(){
+        UserVerifyDuplicateNicknameRequest userVerifyDuplicateRequest = new UserVerifyDuplicateNicknameRequest("email");
+        ResponseEntity responseEntity =userController.verifyDuplicateNickname(userVerifyDuplicateRequest);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        assertTrue(result.get("statusCode").toString().equals("200"));
     }
 
     @Test
-    public void verifyDuplicateEmail(){
-        final String EMAIL = "";
-        ResponseEntity responseEntity = userController.verifyDuplicateEmail(EMAIL);
-        System.out.println(responseEntity);
+    public void verifyDuplicateEmailTest(){
+        UserVerifyDuplicateEmailRequest userVerifyDuplicateRequest = new UserVerifyDuplicateEmailRequest("KAKAO:NAVER");
+        ResponseEntity responseEntity =userController.verifyDuplicateEmail(userVerifyDuplicateRequest);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        assertTrue(result.get("statusCode").toString().equals("200"));
     }
 
     @Test
     public void showTest(){
-        final Long USER_ID = 145L;
-        ResponseEntity responseEntity = userController.show(USER_ID);
-        System.out.println(responseEntity);
+        ResponseEntity responseEntity = userController.show(12L);
+        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+        System.out.println(result.get("data"));
+        assertTrue(result.get("statusCode").toString().equals("200"));
     }
 }

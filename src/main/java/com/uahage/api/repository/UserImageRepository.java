@@ -1,14 +1,11 @@
 package com.uahage.api.repository;
 
-import com.uahage.api.domain.UserImage;
-import org.apache.ibatis.annotations.Mapper;
+import com.uahage.api.domain.user.UserImage;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-@Mapper
-public interface UserImageRepository {
+public interface UserImageRepository extends JpaRepository<UserImage, Long> {
 
-    List<UserImage> findAllByUserId(Long userId);
-    void deleteById(Long id);
-    void saveAll(List<UserImage> userImages);
+    List<UserImage> findAllByUserId(Long id);
 }

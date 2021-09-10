@@ -55,9 +55,6 @@ public class S3Service {
         List<String> fileNames = new ArrayList<>();
 
         for(MultipartFile file : files) {
-            // TODO: 이미지 검사
-            validationImageFile(file);
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             Date date = new Date();
             String stringDate = sdf.format(date);
@@ -72,26 +69,6 @@ public class S3Service {
             fileNames.add(s3Client.getUrl(bucket, fullImageName).toString());
         }
         return fileNames;
-    }
-
-    private void validationImageFile(MultipartFile file) throws Exception {
-
-        String fileName = file.getOriginalFilename().replaceAll("\\s+","");;
-        long fileSize = file.getSize();
-
-        String regExp = "^([\\S]+(\\.(?i)(jpg|png|gif|bmp))$)";
-        System.out.println("파일 이름 : "+ fileName);
-        // TODO: 이미지 파일 타입 검사
-        if(!fileName.matches(regExp)){
-            throw new BindException("Is Not Image File: jpg, png, gif, bmp 확장자 파일만 사용할 수 있습니다.");
-        }
-
-        System.out.println("파일 사이즈 : "+ fileSize);
-        final int limitSize = 2000000;
-        // TODO: 이미지 사이즈 초과시 실패 응답
-        if( fileSize > limitSize  ){
-            throw new BindException("File Size Overflow: 파일 하나의 사이즈는 최대 2MB로 제한됩니다.");
-        }
     }
 
     public void delete(String key) throws Exception {
