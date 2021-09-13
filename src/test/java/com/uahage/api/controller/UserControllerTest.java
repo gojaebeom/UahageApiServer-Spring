@@ -2,6 +2,7 @@ package com.uahage.api.controller;
 
 import com.amazonaws.util.IOUtils;
 import com.uahage.api.dto.*;
+import com.uahage.api.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,9 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Test
     public void joinTest() throws Exception {
         List<Character> babyGenders = new ArrayList<>();
@@ -36,7 +40,7 @@ class UserControllerTest {
         UserJoinRequest joinRequest = new UserJoinRequest(null,"nickname", (short)6, babyGenders, babyBirthDays);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        final String token = "OXMdy62ymfxRc6gBF2USv10XcJedL6lMY8DAkgopcBMAAAF7zTGfDA";
+        final String token = "v48e_SI7dLHCFDH-PuzpUW2vbOoNNRTpXQLLgQopyNoAAAF7yFMA1A";
         request.addHeader("Authorization", "bearer ".concat(token));
 
         ResponseEntity responseEntity = userController.joinWithKakao(request, joinRequest);

@@ -89,7 +89,7 @@ public class UserController {
         UserShowResponse userShowResponse = userService.show(id);
         Map<String, Object> response = new HashMap<>();
         response.put("message","회원 상세정보를 성공적으로 가져왔습니다.");
-        response.put("data", userShowResponse);
+        response.put("user", userShowResponse);
         response.put("statusCode", 200);
         return ResponseEntity.ok(response);
     }

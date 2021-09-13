@@ -129,6 +129,7 @@ public class UserEditRequest{
         }
         log.info("[부모 연령층 입력값 검사 : PASS ]");
         return true;
+
     }
 
     public Boolean verifyBabyGender() {

@@ -2,25 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.uahage.api.mapper.UserMapper">
-    <resultMap id="user" type="com.uahage.api.dto.UserShowResponse$User">
-        <id column="id" property="id"/>
-        <result column="nickname" property="nickname"/>
-        <result column="age_group_type" property="ageGroupType"/>
-        <association property="userImage" resultMap="userImage"/>
-        <collection property="userBabies" resultMap="userBaby"/>
-    </resultMap>
-    <resultMap id="userBaby" type="com.uahage.api.dto.UserShowResponse$UserBaby">
+    <resultMap id="baby" type="java.util.HashMap">
         <result column="baby_birthday" property="babyBirthday"/>
         <result column="baby_gender" property="babyGender"/>
     </resultMap>
-    <resultMap id="userImage" type="com.uahage.api.dto.UserShowResponse$UserImage">
+    <resultMap id="image" type="java.util.HashMap">
         <result column="image_path" property="imagePath"/>
     </resultMap>
 
-    <resultMap id="findOneByIdMap" type="com.uahage.api.dto.UserShowResponse">
-        <association property="user" resultMap="user"/>
+    <resultMap id="detail" type="com.uahage.api.dto.UserShowResponse">
+        <id column="id" property="id"/>
+        <result column="nickname" property="nickname"/>
+        <result column="age_group_type" property="ageGroupType"/>
+        <association property="image" resultMap="image"/>
+        <collection property="babies" resultMap="baby"/>
     </resultMap>
-    <select id="findOneById" parameterType="java.lang.Long" resultMap="findOneByIdMap">
+    <select id="findOneById" parameterType="java.lang.Long" resultMap="detail">
         select
             u.id, u.nickname, u.age_group_type,
             ub.baby_birthday, ub.baby_gender

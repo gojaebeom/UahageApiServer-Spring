@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.uahage.api.mapper.PlaceRestaurantMapper">
+    <resultMap id="facility" type="java.util.HashMap">
+        <result column="baby_bed" property="babyBed"/>
+        <result column="baby_chair" property="babyChair"/>
+        <result column="baby_menu" property="babyMenu"/>
+        <result column="baby_tableware" property="babyTableware"/>
+        <result column="stroller" property="stroller"/>
+        <result column="diaper_change" property="diaperChange"/>
+        <result column="meeting_room" property="meetingRoom"/>
+        <result column="nursing_room" property="nursingRoom"/>
+        <result column="play_room" property="playRoom"/>
+        <result column="parking" property="parking"/>
+    </resultMap>
+    <resultMap id="image" type="java.util.HashMap">
+        <result column="image_path" property="imagePath"/>
+    </resultMap>
+    <resultMap id="menu" type="java.util.HashMap">
+        <result column="menuName" property="name"/>
+        <result column="price" property="price"/>
+    </resultMap>
+    <resultMap id="info" type="java.util.HashMap">
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="close_day" property="closeDay"/>
+        <result column="memo" property="memo"/>
+    </resultMap>
+
+    <resultMap id="restaurantMap" type="com.uahage.api.dto.PlaceRestaurantMapResponse"/>
+    <select id="findAllByOptionsTypeMap" parameterType="com.uahage.api.dto.PlaceRestaurantsRequest" resultMap="restaurantMap">
+        select
+            -- 레스토랑 기본 정보
+            pr.id, pr.name, pr.lat, pr.lon, pr.category_id
+        from p_restaurants as pr
+        left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
+        <where>
+            <if test="babyBed == true">and prf.baby_bed = true</if>
+            <if test="babyChair == true">and prf.baby_chair = true</if>
+            <if test="babyMenu == true">and prf.baby_menu = true</if>
+            <if test="babyTableware == true">and prf.baby_tableware = true</if>
+            <if test="stroller == true">and prf.stroller = true</if>
+            <if test="diaperChange == true">and prf.diaper_change = true</if>
+            <if test="meetingRoom == true">and prf.meeting_room = true</if>
+            <if test="nursingRoom == true">and prf.nursing_room = true</if>
+            <if test="playRoom == true">and prf.play_room = true</if>
+            <if test="parking == true">and prf.parking = true</if>
+            ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat})) <![CDATA[ <= ]]> 500
+        </where>
+    </select>
+
+    <resultMap id="restaurantList" type="com.uahage.api.dto.PlaceRestaurantListResponse">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="lat" property="lat"/>
+        <result column="lon" property="lon"/>
+        <association property="image" resultMap="image"/>
+        <association property="facility" resultMap="facility"/>
+    </resultMap>
+    <select id="findAllByOptions" parameterType="com.uahage.api.dto.PlaceRestaurantsRequest" resultMap="restaurantList">
+        select
+        -- 레스토랑 기본 정보
+        pr.id, pr.name, pr.address, pr.phone, pr.lat, pr.lon, pr.category_id,
+        -- 레스토랑 유아 관련 정보
+        prf.baby_bed,prf.baby_chair,prf.baby_menu,prf.baby_tableware,prf.stroller,prf.diaper_change,prf.meeting_room,prf.nursing_room,prf.play_room,prf.parking,
+        -- 레스토랑 이미지( 한개만 )
+        (select image_path from p_restaurant_images where restaurant_id = pr.id limit 1) as image_path,
+        -- 레스토랑 리뷰 총점
+        ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
+        -- 북마크 상태
+        (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = pr.id ) as isBookmarked
+        from p_restaurants as pr
+        left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
+        <where>
+            <if test="babyBed == true">and prf.baby_bed = true</if>
+            <if test="babyChair == true">and prf.baby_chair = true</if>
+            <if test="babyMenu == true">and prf.baby_menu = true</if>
+            <if test="babyTableware == true">and prf.baby_tableware = true</if>
+            <if test="stroller == true">and prf.stroller = true</if>
+            <if test="diaperChange == true">and prf.diaper_change = true</if>
+            <if test="meetingRoom == true">and prf.meeting_room = true</if>
+            <if test="nursingRoom == true">and prf.nursing_room = true</if>
+            <if test="playRoom == true">and prf.play_room = true</if>
+            <if test="parking == true">and prf.parking = true</if>
+        </where>
+        <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
+        <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
+    </select>
+
+    <resultMap id="restaurantDetail" type="com.uahage.api.dto.PlaceRestaurantDetailResponse">
+        <id property="id" column="id"></id>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="lat" property="lat"/>
+        <result column="lon" property="lon"/>
+        <result column="review_total" property="reviewTotal"/>
+        <result column="is_bookmarked" property="isBookmarked"/>
+        <association property="info" resultMap="info"/>
+        <association property="facility" resultMap="facility"/>
+        <collection property="images" resultMap="image"/>
+        <collection property="menu" resultMap="menu"/>
+    </resultMap>
+
+    <select id="findOneByIdWithOptionalUserId" parameterType="com.uahage.api.dto.PlaceRestaurantDetailRequest" resultMap="restaurantDetail">
+        -- 레스토랑,카페 상세보기
+        select
+            -- 레스토랑 기본 정보
+            pr.id, pr.name, pr.address, pr.phone,
+            -- 레스토랑 유아 관련 정보
+            prf.baby_bed,prf.baby_chair,prf.baby_menu,prf.baby_tableware,prf.stroller,prf.diaper_change,prf.meeting_room,prf.nursing_room,prf.play_room,prf.parking,
+            -- 레스토랑 이미지 ( N )
+            pri.id, pri.image_path,
+            -- 레스토랑 매뉴 ( N )
+            prm.name as menuName, prm.price,
+            -- 레스토랑 정보,
+            prif.start_time, prif.end_time, prif.close_day, prif.memo,
+            -- 리뷰 토탈
+            ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
+            -- 북마크 상태
+            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = #{id} ) as is_bookmarked
+        from p_restaurants as pr
+                 left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
+                 left outer join p_restaurant_images pri on pr.id = pri.restaurant_id
+                 left outer join p_restaurant_menu prm on pr.id = prm.restaurant_id
+                 left outer join p_restaurant_info prif on pr.id = prif.restaurant_id
+        where pr.id = #{id};
+    </select>
+</mapper>
