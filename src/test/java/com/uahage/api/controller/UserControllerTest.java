@@ -28,76 +28,76 @@ class UserControllerTest {
     @Autowired
     private UserMapper userMapper;
 
-    @Test
-    public void joinTest() throws Exception {
-        List<Character> babyGenders = new ArrayList<>();
-        babyGenders.add('M');
-        babyGenders.add('F');
-        List<String> babyBirthDays = new ArrayList<>();
-        babyBirthDays.add("2025-05-15");
-        babyBirthDays.add("2025-06-21");
-
-        UserJoinRequest joinRequest = new UserJoinRequest(null,"nickname", (short)6, babyGenders, babyBirthDays);
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        final String token = "v48e_SI7dLHCFDH-PuzpUW2vbOoNNRTpXQLLgQopyNoAAAF7yFMA1A";
-        request.addHeader("Authorization", "bearer ".concat(token));
-
-        ResponseEntity responseEntity = userController.joinWithKakao(request, joinRequest);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
-
-    @Test
-    public void editTest() throws Exception {
-        File file = new File("C:/images/test.jpg");
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
-        List<MultipartFile> files = new ArrayList<>();
-        files.add(multipartFile);
-
-        List<Character> babyGenders = new ArrayList<>();
-        babyGenders.add('M');
-        babyGenders.add('F');
-        List<String> babyBirthDays = new ArrayList<>();
-        babyBirthDays.add("2025-05-15");
-        babyBirthDays.add("2025-06-21");
-
-        UserEditRequest userEditRequest = new UserEditRequest(11L,files,'Y',"nickname",(short)3, babyGenders, babyBirthDays);
-        ResponseEntity responseEntity = userController.edit(userEditRequest);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
-
-    @Test
-    public void destroyTest() throws Exception {
-        UserDestroyRequest userDestroyRequest = new UserDestroyRequest(11L);
-        ResponseEntity responseEntity = userController.destroy(userDestroyRequest);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
-
-    @Test
-    public void verifyDuplicateNicknameTest(){
-        UserVerifyDuplicateNicknameRequest userVerifyDuplicateRequest = new UserVerifyDuplicateNicknameRequest("email");
-        ResponseEntity responseEntity =userController.verifyDuplicateNickname(userVerifyDuplicateRequest);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
-
-    @Test
-    public void verifyDuplicateEmailTest(){
-        UserVerifyDuplicateEmailRequest userVerifyDuplicateRequest = new UserVerifyDuplicateEmailRequest("KAKAO:NAVER");
-        ResponseEntity responseEntity =userController.verifyDuplicateEmail(userVerifyDuplicateRequest);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
-
-    @Test
-    public void showTest(){
-        ResponseEntity responseEntity = userController.show(12L);
-        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
-        System.out.println(result.get("data"));
-        assertTrue(result.get("statusCode").toString().equals("200"));
-    }
+//    @Test
+//    public void joinTest() throws Exception {
+//        List<Character> babyGenders = new ArrayList<>();
+//        babyGenders.add('M');
+//        babyGenders.add('F');
+//        List<String> babyBirthDays = new ArrayList<>();
+//        babyBirthDays.add("2025-05-15");
+//        babyBirthDays.add("2025-06-21");
+//
+//        UserJoinRequest joinRequest = new UserJoinRequest(null,"nickname", (short)6, babyGenders, babyBirthDays);
+//
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        final String token = "v48e_SI7dLHCFDH-PuzpUW2vbOoNNRTpXQLLgQopyNoAAAF7yFMA1A";
+//        request.addHeader("Authorization", "bearer ".concat(token));
+//
+//        ResponseEntity responseEntity = userController.joinWithKakao(request, joinRequest);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
+//
+//    @Test
+//    public void editTest() throws Exception {
+//        File file = new File("C:/images/test.jpg");
+//        FileInputStream input = new FileInputStream(file);
+//        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
+//        List<MultipartFile> files = new ArrayList<>();
+//        files.add(multipartFile);
+//
+//        List<Character> babyGenders = new ArrayList<>();
+//        babyGenders.add('M');
+//        babyGenders.add('F');
+//        List<String> babyBirthDays = new ArrayList<>();
+//        babyBirthDays.add("2025-05-15");
+//        babyBirthDays.add("2025-06-21");
+//
+//        UserEditRequest userEditRequest = new UserEditRequest(11L,files,'Y',"nickname",(short)3, babyGenders, babyBirthDays);
+//        ResponseEntity responseEntity = userController.edit(userEditRequest);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
+//
+//    @Test
+//    public void destroyTest() throws Exception {
+//        UserDestroyRequest userDestroyRequest = new UserDestroyRequest(11L);
+//        ResponseEntity responseEntity = userController.destroy(userDestroyRequest);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
+//
+//    @Test
+//    public void verifyDuplicateNicknameTest(){
+//        UserVerifyDuplicateNicknameRequest userVerifyDuplicateRequest = new UserVerifyDuplicateNicknameRequest("email");
+//        ResponseEntity responseEntity =userController.verifyDuplicateNickname(userVerifyDuplicateRequest);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
+//
+//    @Test
+//    public void verifyDuplicateEmailTest(){
+//        UserVerifyDuplicateEmailRequest userVerifyDuplicateRequest = new UserVerifyDuplicateEmailRequest("KAKAO:NAVER");
+//        ResponseEntity responseEntity =userController.verifyDuplicateEmail(userVerifyDuplicateRequest);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
+//
+//    @Test
+//    public void showTest(){
+//        ResponseEntity responseEntity = userController.show(12L);
+//        HashMap<String, Object> result = (HashMap<String, Object>) responseEntity.getBody();
+//        System.out.println(result.get("data"));
+//        assertTrue(result.get("statusCode").toString().equals("200"));
+//    }
 }

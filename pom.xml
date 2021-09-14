@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.uahage.api</groupId>
-    <artifactId>uahage-api-server-v2</artifactId>
+    <artifactId>uahage-api-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>uahage-api-server-v2</name>
+    <name>uahage-api-server</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>

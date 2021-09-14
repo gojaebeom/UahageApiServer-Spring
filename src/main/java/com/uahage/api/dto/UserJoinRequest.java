@@ -2,24 +2,22 @@ package com.uahage.api.dto;
 
 import com.uahage.api.domain.user.User;
 import com.uahage.api.domain.user.UserBaby;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@Setter
 @Slf4j
+@ToString
 public class UserJoinRequest{
-    @Setter
     private String email;
     private String nickname;
     private Short ageGroupType;
@@ -31,6 +29,7 @@ public class UserJoinRequest{
         this.verifyNickname();
         this.verifyAgeGroupType();
         this.verifyBabyGender();
+        this.verifyBabyBirthdays();
     }
 
     public void verifyEmail() {
@@ -102,7 +101,7 @@ public class UserJoinRequest{
 
     public void verifyBabyGender() {
         log.info("[아이 성별 검사 ]");
-        if(this.babyGenders == null){
+        if(this.babyGenders == null || this.babyGenders.equals("")){
             this.babyGenders.add('M');
         }
         log.info("[아이 성별 Null 검사 : PASS ]");
@@ -117,12 +116,23 @@ public class UserJoinRequest{
         }
     }
 
+    public void verifyBabyBirthdays() {
+        log.info("[아이 생일 검사]");
+        if(this.babyBirthdays == null || this.babyBirthdays.equals("")){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String now_day = format.format(now);
+            this.babyBirthdays.add(now_day);
+        }
+        log.info("[아이 생일 검사 : PASS ]");
+    }
+
     public User toUser() {
         return User.builder()
-                .email(this.email)
-                .nickname(this.nickname)
-                .ageGroupType(this.ageGroupType)
-                .build();
+            .email(this.email)
+            .nickname(this.nickname)
+            .ageGroupType(this.ageGroupType)
+            .build();
     }
 
     public List<UserBaby> toUserBabies(User user) {

@@ -58,13 +58,14 @@ public class UserService {
 
         log.info("로그인 진행");
         String act = tokenService.createAct(user.getId());
+        String rft = tokenService.createRft(user.getId());
 
         log.info("엑세스 토큰 발급 완료");
         System.out.println(act);
 
         return UserJoinResponse.builder()
                 .accessToken(act)
-                .refreshToken(act)
+                .refreshToken(rft)
                 .build();
     }
 
@@ -117,18 +118,22 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void verifyDuplicateNickname(UserVerifyDuplicateNicknameRequest userVerifyDuplicateNicknameRequest) {
+    public Boolean verifyDuplicateNickname(UserVerifyDuplicateNicknameRequest userVerifyDuplicateNicknameRequest) {
         userVerifyDuplicateNicknameRequest.verifyNickname();
         log.info("[ 닉네임 중복 채크 ]");
         if(userRepository.countByNickname(userVerifyDuplicateNicknameRequest.getNickname()) != 0)
-            throw new IllegalArgumentException("중복된 닉네임 입니다.");
+            return false;
+
+        return true;
     }
 
-    public void verifyDuplicateEmail(UserVerifyDuplicateEmailRequest userVerifyDuplicateEmailRequest) {
+    public Boolean verifyDuplicateEmail(UserVerifyDuplicateEmailRequest userVerifyDuplicateEmailRequest) {
         userVerifyDuplicateEmailRequest.verifyEmail();
         log.info("[ 이메일 중복 채크 ]");
         if(userRepository.countByEmail(userVerifyDuplicateEmailRequest.getEmail()) != 0)
-            throw new IllegalArgumentException("사용중인 이메일 입니다.");
+            return false;
+
+        return true;
     }
 
     public UserShowResponse show(Long id) {

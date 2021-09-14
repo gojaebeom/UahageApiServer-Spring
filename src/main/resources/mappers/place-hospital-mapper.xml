@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.uahage.api.mapper.PlaceHospitalMapper">
+    <resultMap id="info" type="java.util.HashMap">
+        <result column="examination_items" property="examinationItems"/>
+    </resultMap>
+
+    <resultMap id="findAllByOptionsMap" type="com.uahage.api.dto.PlaceCommonListResponse">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="lat" property="lat"/>
+        <result column="lon" property="lon"/>
+        <association property="info" resultMap="info"/>
+    </resultMap>
+    <select id="findAllByOptions" parameterType="com.uahage.api.dto.PlaceCommonRequest" resultMap="findAllByOptionsMap">
+        select id, name, address, phone, examination_items , lat ,lon
+        from p_hospitals
+        order by  ST_DistanceSphere(geom, ST_MakePoint(${lon},${lat}))
+        limit 10 offset ${pageNumber};
+    </select>
+
+    <resultMap id="findMapByOptionsMap" type="com.uahage.api.dto.PlaceCommonListResponse">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="lat" property="lat"/>
+        <result column="lon" property="lon"/>
+        <association property="info" resultMap="info"/>
+    </resultMap>
+    <select id="findMapByOptions" parameterType="com.uahage.api.dto.PlaceCommonRequest" resultMap="findMapByOptionsMap">
+        select id, name, address, phone, examination_items , lat ,lon
+        from p_hospitals
+        where ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat})) <![CDATA[ <= ]]> 500
+    </select>
+
+    <select id="findOneById">
+
+    </select>
+</mapper>

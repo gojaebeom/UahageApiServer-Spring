@@ -37,6 +37,7 @@ public class UserController {
 
     private ResponseEntity<?> join(UserJoinRequest joinRequest, String email) {
         joinRequest.setEmail(email);
+        System.out.println(joinRequest);
         UserJoinResponse joinResponse = userService.join(joinRequest);
 
         Map<String, Object> response = new HashMap<>();
@@ -68,18 +69,20 @@ public class UserController {
 
     @GetMapping("/verify-duplicate-nickname/{nickname}")
     public ResponseEntity<?> verifyDuplicateNickname(UserVerifyDuplicateNicknameRequest userVerifyDuplicateNicknameRequest) {
-        userService.verifyDuplicateNickname(userVerifyDuplicateNicknameRequest);
+        Boolean result = userService.verifyDuplicateNickname(userVerifyDuplicateNicknameRequest);
         Map<String, Object> response = new HashMap<>();
-        response.put("message","사용가능한 닉네임 입니다.");
+        response.put("available", result);
+        response.put("message", result ? "사용가능한 닉네임 입니다.": "중복된 닉네임 입니다.");
         response.put("statusCode", 200);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/verify-duplicate-email/{email}")
     public ResponseEntity<?> verifyDuplicateEmail(UserVerifyDuplicateEmailRequest userVerifyDuplicateEmailRequest) {
-        userService.verifyDuplicateEmail(userVerifyDuplicateEmailRequest);
+        Boolean result = userService.verifyDuplicateEmail(userVerifyDuplicateEmailRequest);
         Map<String, Object> response = new HashMap<>();
-        response.put("message","사용가능한 이메일 입니다.");
+        response.put("available", result);
+        response.put("message", result ? "사용가능한 이메일 입니다.": "중복된 이메일 입니다.");
         response.put("statusCode", 200);
         return ResponseEntity.ok(response);
     }

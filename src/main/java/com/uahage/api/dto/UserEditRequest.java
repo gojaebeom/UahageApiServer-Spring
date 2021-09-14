@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 @Getter
 @ToString
 @Slf4j
+@Setter
 public class UserEditRequest{
 
     private Long id;

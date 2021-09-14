@@ -57,6 +57,9 @@
         <result column="phone" property="phone"/>
         <result column="lat" property="lat"/>
         <result column="lon" property="lon"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="review_total" property="reviewTotal"/>
+        <result column="is_bookmarked" property="isBookmarked"/>
         <association property="image" resultMap="image"/>
         <association property="facility" resultMap="facility"/>
     </resultMap>
@@ -71,7 +74,7 @@
         -- 레스토랑 리뷰 총점
         ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
         -- 북마크 상태
-        (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = pr.id ) as isBookmarked
+        (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = pr.id ) as is_bookmarked
         from p_restaurants as pr
         left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
         <where>

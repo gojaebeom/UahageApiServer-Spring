@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 @Getter
 @AllArgsConstructor
 @Slf4j
+@Setter
 public class UserVerifyDuplicateNicknameRequest {
     private String nickname;
 
