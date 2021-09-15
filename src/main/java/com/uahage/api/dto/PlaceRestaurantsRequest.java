@@ -27,8 +27,8 @@ public class PlaceRestaurantsRequest {
     public void setPageNumber(Integer pageNumber) {
         // 1 : 1 ~ 10
         // 2 : 11 ~ 20
-        System.out.println(((pageNumber-1) * 10)+1);
-        this.pageNumber = pageNumber <= 1 ? pageNumber : ((pageNumber-1) * 10)+1;
+//        System.out.println(((pageNumber-1) * 10)+1);
+        this.pageNumber = ((pageNumber-1) * 10);
     }
 
     @Builder
@@ -52,7 +52,7 @@ public class PlaceRestaurantsRequest {
     }
 
     public boolean isMap() {
-        if(this.pageNumber == null || this.pageNumber <= 0 )
+        if(this.pageNumber == null )
             return true;
 
         return false;

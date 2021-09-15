@@ -91,7 +91,7 @@
             <if test="isBookmarked == true">and (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and restaurant_id = pr.id ) = true</if>
         </where>
         <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
-        <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
+        <if test="pageNumber != null">limit 10 offset #{pageNumber}</if>
     </select>
 
     <resultMap id="restaurantDetail" type="com.uahage.api.dto.PlaceRestaurantDetailResponse">

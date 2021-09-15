@@ -7,7 +7,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class PlaceRestaurantReviewRequest {
+public class PlaceRestaurantReviewsRequest {
     private Long placeId; // 필수값
     private String type;
     private String order;

@@ -3,6 +3,7 @@
 
 <mapper namespace="com.uahage.api.mapper.UserMapper">
     <resultMap id="baby" type="java.util.HashMap">
+        <result column="baby_id" property="id"/>
         <result column="baby_birthday" property="babyBirthday"/>
         <result column="baby_gender" property="babyGender"/>
     </resultMap>
@@ -20,7 +21,7 @@
     <select id="findOneById" parameterType="java.lang.Long" resultMap="detail">
         select
             u.id, u.nickname, u.age_group_type,
-            ub.baby_birthday, ub.baby_gender
+            ub.id as baby_id, ub.baby_birthday, ub.baby_gender
         from users u
             left outer join user_babies ub on u.id = ub.user_id
         where u.id = #{id};

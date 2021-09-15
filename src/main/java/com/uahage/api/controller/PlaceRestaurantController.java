@@ -50,11 +50,11 @@ public class PlaceRestaurantController {
     }
 
     @PostMapping("/bookmarked")
-    public ResponseEntity<?> bookmarked(PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest){
+    public ResponseEntity<?> bookmarked(@RequestBody PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest){
 
         Boolean result = placeRestaurantService.bookmarked(placeRestaurantBookmarkRequest);
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "음식점, 카페 상세정보를 성공적으로 가져왔습니다");
+        response.put("message", result ? "북마크가 생성되었습니다." : "북마크가 해제되었습니다.");
         response.put("statusCode", 200);
         response.put("isBookmarked", result);
         return ResponseEntity.ok(response);
