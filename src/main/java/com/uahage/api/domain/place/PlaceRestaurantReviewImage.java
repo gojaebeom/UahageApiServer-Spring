@@ -1,8 +1,6 @@
 package com.uahage.api.domain.place;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class PlaceRestaurantReviewImage {
 
     @Id
@@ -22,17 +21,25 @@ public class PlaceRestaurantReviewImage {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-    private PlaceRestaurant restaurant;
+    private PlaceRestaurantReview placeRestaurantReview;
 
-    @Column(name = "origin_path", length = 100, nullable = false)
-    private String originPath;
+    @Column(name = "image_path", length = 100, nullable = false)
+    private String imagePath;
 
-    @Column(name = "preview_path", length = 100)
-    private String previewPath;
+    @Column(name = "preview_image_path", length = 100)
+    private String previewImagePath;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Builder
+    public PlaceRestaurantReviewImage(Long id, PlaceRestaurantReview placeRestaurantReview, String imagePath, String previewImagePath) {
+        this.id = id;
+        this.placeRestaurantReview = placeRestaurantReview;
+        this.imagePath = imagePath;
+        this.previewImagePath = previewImagePath;
+    }
 }

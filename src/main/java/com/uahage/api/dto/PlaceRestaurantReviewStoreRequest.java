@@ -1,5 +1,8 @@
 package com.uahage.api.dto;
 
+import com.uahage.api.domain.place.PlaceRestaurant;
+import com.uahage.api.domain.place.PlaceRestaurantReview;
+import com.uahage.api.domain.user.User;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,14 @@ public class PlaceRestaurantReviewStoreRequest {
             throw new IllegalArgumentException("회원 Id가 존재하지 않습니다.");
         }
         log.info("[ userId 유효성 검사 : OK ]");
-        return this.placeId;
+        return this.userId;
+    }
+
+    public boolean verifyImages() {
+        if(this.images == null){
+            return false;
+        }
+        return true;
     }
 
     public List<MultipartFile> getImagesOrThrowException(){
@@ -102,4 +112,18 @@ public class PlaceRestaurantReviewStoreRequest {
         log.info("[ 서비스 평점 유효성 검사 : OK ]");
         return this.serviceRating;
     }
+
+    public PlaceRestaurantReview toRestaurantReview(PlaceRestaurant restaurant, User user) {
+        return PlaceRestaurantReview.builder()
+                .user(user)
+                .restaurant(restaurant)
+                .description(this.getDescOrThrowException())
+                .tasteRating(this.getTasteRatingOrThrowException())
+                .costRating(this.getCostRatingOrThrowException())
+                .serviceRating(this.getServiceRatingOrThrowException())
+                .totalRating(this.tasteRating + this.costRating + this.serviceRating /3)
+                .build();
+    }
+
+
 }
