@@ -28,4 +28,19 @@ public class PlaceRestaurantService {
     public PlaceRestaurantDetailResponse findOneById(PlaceRestaurantDetailRequest placeRestaurantDetailRequest){
         return placeRestaurantMapper.findOneByIdWithOptionalUserId(placeRestaurantDetailRequest);
     }
+
+    public Boolean bookmarked(PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest) {
+        placeRestaurantBookmarkRequest.verifyAll();
+
+        Long bookmarkId = placeRestaurantMapper.findBookmarkIdByPlaceIdWithUserId(placeRestaurantBookmarkRequest);
+        log.info("[ 북마크 아이디 확인 ]");
+        System.out.println(bookmarkId);
+        if( bookmarkId != null ){
+            placeRestaurantMapper.deleteBookmark(bookmarkId);
+            return false;
+        }else{
+            placeRestaurantMapper.saveBookmark(placeRestaurantBookmarkRequest);
+            return true;
+        }
+    }
 }

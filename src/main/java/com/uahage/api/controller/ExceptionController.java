@@ -13,7 +13,7 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity IllegalArgumentExceptionHandler(IllegalArgumentException e) {
         System.out.println("IllegalArgumentException: 에러 발생");
-        e.printStackTrace();
+        System.out.println(e);
         Map<String, Object> response = new HashMap<>();
         String message = e.getMessage() != null ? e.getMessage() : "잘못된 요청입니다.";
         response.put("message", message);
@@ -24,7 +24,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity exceptionHandler(Exception e) {
         System.out.println("Exception: 에러 발생");
-        e.printStackTrace();
+        System.out.println(e);
         Map<String, Object> response = new HashMap<>();
         String message = e.getMessage() != null ? e.getMessage() : "요청을 처리하지 못하였습니다.";
         response.put("message", message);

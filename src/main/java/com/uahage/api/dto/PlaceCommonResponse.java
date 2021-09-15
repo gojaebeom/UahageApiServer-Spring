@@ -3,9 +3,10 @@ package com.uahage.api.dto;
 import lombok.Getter;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
-public class PlaceCommonListResponse {
+public class PlaceCommonResponse {
     private Long id;
     private String name;
     private String address;
@@ -13,4 +14,5 @@ public class PlaceCommonListResponse {
     private Float lat;
     private Float lon;
     private HashMap<String, Object> info;
+    private List<HashMap<String,Object>> images;
 }

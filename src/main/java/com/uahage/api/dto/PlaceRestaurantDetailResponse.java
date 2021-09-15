@@ -26,5 +26,4 @@ public class PlaceRestaurantDetailResponse {
     private List<HashMap<String,Object>> menu;
     // images
     private List<HashMap<String,Object>> images;
-
 }

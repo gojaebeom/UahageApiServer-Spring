@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class PlaceRestaurantsRequest {
     private Float lat;
     private Float lon;

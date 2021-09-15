@@ -46,7 +46,7 @@
             <if test="nursingRoom == true">and prf.nursing_room = true</if>
             <if test="playRoom == true">and prf.play_room = true</if>
             <if test="parking == true">and prf.parking = true</if>
-            ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat})) <![CDATA[ <= ]]> 500
+            <if test="lon != null and lat != null">and ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat})) <![CDATA[ <= ]]> 500</if>
         </where>
     </select>
 
@@ -74,7 +74,7 @@
         -- 레스토랑 리뷰 총점
         ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
         -- 북마크 상태
-        (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = pr.id ) as is_bookmarked
+        (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and restaurant_id = pr.id ) as is_bookmarked
         from p_restaurants as pr
         left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
         <where>
@@ -88,6 +88,7 @@
             <if test="nursingRoom == true">and prf.nursing_room = true</if>
             <if test="playRoom == true">and prf.play_room = true</if>
             <if test="parking == true">and prf.parking = true</if>
+            <if test="isBookmarked == true">and (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and restaurant_id = pr.id ) = true</if>
         </where>
         <if test="lon != null and lat != null">order by  ST_DistanceSphere(geom, ST_MakePoint(#{lon},#{lat}))</if>
         <if test="pageNumber != null or pageNumber > 0">limit 10 offset #{pageNumber}</if>
@@ -124,12 +125,25 @@
             -- 리뷰 토탈
             ROUND((select avg(total_rating) from p_restaurant_reviews where restaurant_id= pr.id ),1) as review_total,
             -- 북마크 상태
-            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and id = #{id} ) as is_bookmarked
+            (select case when count(id) > 0 then true else false end from p_restaurant_bookmarks prb where user_id = #{userId} and restaurant_id = #{id} ) as is_bookmarked
         from p_restaurants as pr
                  left outer join p_restaurant_facilities prf on pr.id = prf.restaurant_id
                  left outer join p_restaurant_images pri on pr.id = pri.restaurant_id
                  left outer join p_restaurant_menu prm on pr.id = prm.restaurant_id
                  left outer join p_restaurant_info prif on pr.id = prif.restaurant_id
         where pr.id = #{id};
+    </select>
+
+    <select id="findBookmarkIdByPlaceIdWithUserId" parameterType="com.uahage.api.dto.PlaceRestaurantBookmarkRequest" resultType="java.lang.Long">
+        select id from p_restaurant_bookmarks
+        where user_id = #{userId} and restaurant_id = #{placeId};
+    </select>
+    <select id="saveBookmark" parameterType="com.uahage.api.dto.PlaceRestaurantBookmarkRequest">
+        insert into p_restaurant_bookmarks(user_id , restaurant_id)
+        values (#{userId}, #{placeId});
+    </select>
+    <select id="deleteBookmark" parameterType="java.lang.Long">
+        delete from p_restaurant_bookmarks
+        where id = #{bookmarkId}
     </select>
 </mapper>

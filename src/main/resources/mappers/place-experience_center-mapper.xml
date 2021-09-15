@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.uahage.api.mapper.PlaceHospitalMapper">
+<mapper namespace="com.uahage.api.mapper.PlaceExperienceCenterMapper">
     <resultMap id="find" type="com.uahage.api.dto.PlaceCommonResponse">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
@@ -12,7 +12,7 @@
         <association property="info" resultMap="info"/>
     </resultMap>
     <resultMap id="info" type="java.util.HashMap">
-        <result column="examination_items" property="examinationItems"/>
+        <result column="admission_fee" property="admissionFee"/>
     </resultMap>
 
     <resultMap id="findAllByOptionsMap" type="com.uahage.api.dto.PlaceCommonResponse">
@@ -25,21 +25,21 @@
         <association property="info" resultMap="info"/>
     </resultMap>
     <select id="findAllByOptions" parameterType="com.uahage.api.dto.PlaceCommonRequest" resultMap="find">
-        select id, name, address, phone, examination_items , lat ,lon
-        from p_hospitals
+        select id, name, address, phone, admission_fee, lat ,lon
+        from p_experience_centers
         order by  ST_DistanceSphere(geom, ST_MakePoint(${lon},${lat}))
         limit 10 offset ${pageNumber};
     </select>
 
 
     <select id="findMapByOptions" parameterType="com.uahage.api.dto.PlaceCommonRequest" resultMap="find">
-        select id, name, address, phone, examination_items , lat ,lon
-        from p_hospitals;
+        select id, name, address, phone, admission_fee, lat ,lon
+        from p_experience_centers
     </select>
 
     <select id="findOneById" parameterType="java.lang.Long" resultMap="find">
-        select id, name, address, phone, examination_items , lat ,lon
-        from p_hospitals
+        select id, name, address, phone, admission_fee, lat ,lon
+        from p_experience_centers
         where id = #{id}
     </select>
 </mapper>

@@ -1,6 +1,6 @@
 package com.uahage.api.service;
 
-import com.uahage.api.dto.PlaceCommonListResponse;
+import com.uahage.api.dto.PlaceCommonResponse;
 import com.uahage.api.dto.PlaceCommonRequest;
 import com.uahage.api.mapper.PlaceHospitalMapper;
 import lombok.AllArgsConstructor;
@@ -16,10 +16,14 @@ public class PlaceHospitalService {
 
     private PlaceHospitalMapper placeHospitalMapper;
 
-    public List<PlaceCommonListResponse> findAll(PlaceCommonRequest placeCommonRequest) {
+    public List<PlaceCommonResponse> findAll(PlaceCommonRequest placeCommonRequest) {
         if(placeCommonRequest.isMap()){
             return placeHospitalMapper.findMapByOptions(placeCommonRequest);
         }
         return placeHospitalMapper.findAllByOptions(placeCommonRequest);
+    }
+
+    public PlaceCommonResponse findOne(Long id) {
+        return placeHospitalMapper.findOneById(id);
     }
 }

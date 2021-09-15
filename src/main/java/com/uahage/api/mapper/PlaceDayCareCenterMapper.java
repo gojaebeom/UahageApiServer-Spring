@@ -7,8 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface PlaceHospitalMapper {
-
+public interface PlaceDayCareCenterMapper {
     List<PlaceCommonResponse> findAllByOptions(PlaceCommonRequest placeDefaultRequest);
 
     List<PlaceCommonResponse> findMapByOptions(PlaceCommonRequest placeDefaultRequest);

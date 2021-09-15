@@ -102,13 +102,29 @@ public class UserService {
         }
 
         if(userEditRequest.verifyNickname()){
+            log.info("[ 회원 닉네임 정보 수정 : SOON ]");
             user.setNickname(userEditRequest.getNickname());
+            log.info("[ 회원 닉네임 정보 수정 : OK ]");
         }
         if(userEditRequest.verifyAgeGroupType()){
+            log.info("[ 회원 연령층 정보 수정 : SOON ]");
             user.setAgeGroupType(userEditRequest.getAgeGroupType());
+            log.info("[ 회원 연령층 정보 수정 : SOON ]");
         }
 
-        // 유저 아기 테이블에 대한 수정 미완료
+        if(userEditRequest.verifyBabyBirthdays() && userEditRequest.verifyBabyGender()){
+            log.info("[ 기존의 회원 아기정보 삭제 : SOON ]");
+            List<UserBaby> userBabies = userBabyRepository.findAllByUser(user);
+            System.out.println(userBabies);
+            userBabyRepository.deleteAll(userBabies);
+            log.info("[ 기존의 회원 아기정보 삭제 : OK ]");
+
+            log.info("[ 새로운 회원 아기정보 생성  : SOON ]");
+            userBabies = userEditRequest.toUserBabies(user);
+            System.out.println(userBabies);
+            userBabyRepository.saveAll(userBabies);
+            log.info("[ 새로운 회원 아기정보 생성  : OK ]");
+        }
     }
 
     public void destroy(UserDestroyRequest userDestroyRequest) {

@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.BindException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -135,10 +137,11 @@ public class UserEditRequest{
 
     public Boolean verifyBabyGender() {
         log.info("[아이 성별 검사 ]");
-        if(this.babyGenders == null){
+        if(this.babyGenders == null || this.babyGenders.equals("")){
             return false;
         }
         log.info("[아이 성별 Null 검사 : PASS ]");
+
         for(Character babyGender : this.babyGenders){
             log.info(babyGender.toString());
 
@@ -147,17 +150,15 @@ public class UserEditRequest{
             }
             log.info("[아이 성별 입력값 검사 : PASS ]");
         }
-
         return true;
     }
 
-    public Boolean verifyBabyBirthday(){
-        log.info("[아이 생일 검사 ]");
-        if(this.babyBirthdays == null){
-            log.info("[아이 생일 수정 X ]");
+    public Boolean verifyBabyBirthdays() {
+        log.info("[아이 생일 검사]");
+        if(this.babyBirthdays == null || this.babyBirthdays.equals("")){
             return false;
         }
-        log.info("[아이 생일 수정값 존재 ]");
+        log.info("[아이 생일 검사 : PASS ]");
         return true;
     }
 

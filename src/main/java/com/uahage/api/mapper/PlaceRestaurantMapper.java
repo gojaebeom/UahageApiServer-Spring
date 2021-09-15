@@ -13,4 +13,10 @@ public interface PlaceRestaurantMapper {
     List<PlaceRestaurantListResponse> findAllByOptions(PlaceRestaurantsRequest placeRestaurantsRequest);
 
     List<PlaceRestaurantMapResponse> findAllByOptionsTypeMap(PlaceRestaurantsRequest placeRestaurantsRequest);
+
+    Long findBookmarkIdByPlaceIdWithUserId(PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest);
+
+    void saveBookmark(PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest);
+
+    void deleteBookmark(Long bookmarkId);
 }

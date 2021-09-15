@@ -5,10 +5,7 @@ import com.uahage.api.service.PlaceRestaurantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +21,10 @@ public class PlaceRestaurantController {
 
     @GetMapping("")
     public ResponseEntity<?> index(PlaceRestaurantsRequest placeRestaurantsRequest){
+        System.out.println(placeRestaurantsRequest);
+
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "음식점, 카페 목록을 성공적으로 가져왔습니다");
+        response.put("message", "데이터를 성공적으로 가져왔습니다");
         response.put("statusCode", 200);
         if(placeRestaurantsRequest.isMap()){
             List<PlaceRestaurantMapResponse> placeRestaurantMapResponses = placeRestaurantService.findAllByOptionsTypeMap(placeRestaurantsRequest);
@@ -47,6 +46,17 @@ public class PlaceRestaurantController {
         response.put("message", "음식점, 카페 상세정보를 성공적으로 가져왔습니다");
         response.put("statusCode", 200);
         response.put("place", placeRestaurantDetailResponse);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/bookmarked")
+    public ResponseEntity<?> bookmarked(PlaceRestaurantBookmarkRequest placeRestaurantBookmarkRequest){
+
+        Boolean result = placeRestaurantService.bookmarked(placeRestaurantBookmarkRequest);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "음식점, 카페 상세정보를 성공적으로 가져왔습니다");
+        response.put("statusCode", 200);
+        response.put("isBookmarked", result);
         return ResponseEntity.ok(response);
     }
 }
