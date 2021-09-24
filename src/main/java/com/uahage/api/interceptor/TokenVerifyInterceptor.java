@@ -17,6 +17,10 @@ public class TokenVerifyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("토큰 유효성 검사 인터셉터");
 
+        if(request.getMethod().equals("GET")){
+            return true;
+        }
+
         String tokenString = request.getHeader("Authorization");
         if(tokenString == null){
             throw new AuthenticationException("PERMISSION_NOT_DEFINE");

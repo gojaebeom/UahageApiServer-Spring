@@ -2,6 +2,7 @@ package com.uahage.api.controller;
 
 import com.uahage.api.dto.*;
 import com.uahage.api.service.Oauth2LoginService;
+import com.uahage.api.service.TokenService;
 import com.uahage.api.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class UserController {
 
     @PostMapping("/naver-login")
     public ResponseEntity<?> joinWithNaver(HttpServletRequest request, UserJoinRequest joinRequest) throws Exception {
+        log.info("네이버 로그인 요청");
         String accessTokenString = request.getHeader("Authorization");
         String email = oauth2LoginService.verifyWithNaverTokenThenGetEmail(accessTokenString);
         return join(joinRequest, email);
@@ -48,7 +50,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> edit(UserEditRequest userEditRequest) throws Exception {
+    public ResponseEntity<?> edit(HttpServletRequest request, UserEditRequest userEditRequest) throws Exception {
+
+        TokenService.isMatched(userEditRequest.getId(), Long.parseLong(request.getAttribute("id").toString()));
         userService.edit(userEditRequest);
 
         Map<String, Object> response = new HashMap<>();
@@ -58,8 +62,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(UserDestroyRequest userDestroyRequest) throws Exception {
-        userService.destroy(userDestroyRequest);
+    public ResponseEntity<?> destroy(HttpServletRequest request, @PathVariable Long id) throws Exception {
+
+        TokenService.isMatched(id, Long.parseLong(request.getAttribute("id").toString()));
+        userService.destroy(id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message","회원 탈퇴가 정상적으로 처리되었습니다.");

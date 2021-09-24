@@ -8,12 +8,14 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Setter
 @ToString
 @Slf4j
 public class PlaceRestaurantReviewStoreRequest {
+    private Long reviewId;
     private Long placeId;
     private Long userId;
     private List<MultipartFile> images;
@@ -21,6 +23,17 @@ public class PlaceRestaurantReviewStoreRequest {
     private Float tasteRating;
     private Float costRating;
     private Float serviceRating;
+    private Float totalRating;
+    private List<Long> deleteImgIds;
+
+    public Long getReviewIdOrThrowException(){
+        log.info("[ reviewId 유효성 검사 : Soon ]");
+        if(this.reviewId == null){
+            throw new IllegalArgumentException("리뷰 Id가 존재하지 않습니다.");
+        }
+        log.info("[ reviewId 유효성 검사 : OK ]");
+        return this.reviewId;
+    }
 
     public Long getPlaceIdOrThrowException(){
         log.info("[ placeId 유효성 검사 : Soon ]");
@@ -77,6 +90,13 @@ public class PlaceRestaurantReviewStoreRequest {
         return this.images;
     }
 
+    public Boolean verifyDesc(){
+        if(this.desc.equals("") || this.desc == null){
+            return false;
+        }
+        return true;
+    }
+
     public String getDescOrThrowException(){
         log.info("[ 내용 유효성 검사 : Soon ]");
         if(this.desc.equals("") || this.desc == null){
@@ -95,6 +115,13 @@ public class PlaceRestaurantReviewStoreRequest {
         return this.tasteRating;
     }
 
+
+    public boolean verifyTasteRating() {
+        if(this.tasteRating == null)
+            return false;
+        return true;
+    }
+
     public Float getCostRatingOrThrowException(){
         log.info("[ 가격 평점 유효성 검사 : Soon ]");
         if(this.costRating == null){
@@ -102,6 +129,12 @@ public class PlaceRestaurantReviewStoreRequest {
         }
         log.info("[ 가격 평점 유효성 검사 : OK ]");
         return this.costRating;
+    }
+    public boolean verifyCostRating() {
+        if(this.costRating == null){
+           return false;
+        }
+        return true;
     }
 
     public Float getServiceRatingOrThrowException(){
@@ -113,6 +146,44 @@ public class PlaceRestaurantReviewStoreRequest {
         return this.serviceRating;
     }
 
+    public boolean verifyServiceRating() {
+        if(this.serviceRating == null){
+            return false;
+        }
+        return true;
+    }
+
+    public Float getTotalRatingOrThrowException(){
+        Float total = (this.tasteRating + this.costRating + this.serviceRating)/3;
+        System.out.println("토탈레이팅 검사");
+        System.out.println(total);
+        DecimalFormat form = new DecimalFormat("#.#");
+        this.totalRating = Float.parseFloat(form.format(total));
+
+        log.info("[ 총 평점 유효성 검사 : OK ]");
+        return this.totalRating;
+    }
+
+    public boolean verifyTotalRating() {
+        if (this.totalRating == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean verifyDeleteImgIds(){
+        if(this.deleteImgIds == null){
+            return false;
+        }
+        return true;
+    }
+    public List<Long> getDeleteImgIdsOrThrowException(){
+        if(this.deleteImgIds == null){
+            throw new IllegalArgumentException("삭제할 이미지 리스트가 없습니다.");
+        }
+        return this.deleteImgIds;
+    }
+
     public PlaceRestaurantReview toRestaurantReview(PlaceRestaurant restaurant, User user) {
         return PlaceRestaurantReview.builder()
                 .user(user)
@@ -121,7 +192,7 @@ public class PlaceRestaurantReviewStoreRequest {
                 .tasteRating(this.getTasteRatingOrThrowException())
                 .costRating(this.getCostRatingOrThrowException())
                 .serviceRating(this.getServiceRatingOrThrowException())
-                .totalRating(this.tasteRating + this.costRating + this.serviceRating /3)
+                .totalRating(this.getTotalRatingOrThrowException())
                 .build();
     }
 

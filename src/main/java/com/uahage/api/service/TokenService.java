@@ -46,7 +46,7 @@ public class TokenService {
     public static void isMatched(Long userId, Long tokenUserId) throws AuthenticationException {
         if(userId != tokenUserId){
             log.info("일치하지 않은 유저");
-            throw new AuthenticationException("PERMISSION_NOT_DEFINE");
+            throw new AuthenticationException("일치하지 않는 회원 정보입니다.");
         }
     }
 }

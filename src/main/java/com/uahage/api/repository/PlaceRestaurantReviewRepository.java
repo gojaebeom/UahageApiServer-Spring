@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlaceRestaurantReviewRepository extends JpaRepository<PlaceRestaurantReview, Long> {
 
-    PlaceRestaurantReview findOneById(Long placeIdOrThrowException);
+    PlaceRestaurantReview findOneById(Long reviewId);
 }

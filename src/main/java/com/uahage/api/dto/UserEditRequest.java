@@ -47,37 +47,11 @@ public class UserEditRequest{
             return false;
     }
 
-    public Boolean verifyImages() {
-        log.info("[ 이미지 유효성 검사 ]");
-        if(this.images != null){
-            log.info("[ 이미지 파일 존재여부 OK ]");
-            for(MultipartFile file : this.images){
-                String fileName = file.getOriginalFilename().replaceAll("\\s+","");
-                log.info("[ 이미지 파일명 ]");
-                log.info(fileName);
-                long fileSize = file.getSize();
-
-                String regExp = "^([\\S]+(\\.(?i)(jpg|png|gif|bmp))$)";
-                System.out.println("파일 이름 : "+ fileName);
-                // TODO: 이미지 파일 타입 검사
-                if(!fileName.matches(regExp)){
-                    throw new IllegalArgumentException("Is Not Image File: jpg, png, gif, bmp 확장자 파일만 사용할 수 있습니다.");
-                }
-                log.info("[ 확장자 검사 OK ]");
-
-                System.out.println("파일 사이즈 : "+ fileSize);
-                final int limitSize = 2000000;
-                // TODO: 이미지 사이즈 초과시 실패 응답
-                if( fileSize > limitSize  ){
-                    throw new IllegalArgumentException("File Size Overflow: 파일 하나의 사이즈는 최대 2MB로 제한됩니다.");
-                }
-                log.info("[ 파일 사이즈 검사 OK ]");
-            }
-            return true;
-        }
-        else{
+    public boolean verifyImages() {
+        if(this.images == null){
             return false;
         }
+        return true;
     }
 
     public Boolean verifyNickname() {
@@ -132,47 +106,23 @@ public class UserEditRequest{
         }
         log.info("[부모 연령층 입력값 검사 : PASS ]");
         return true;
-
     }
 
-    public Boolean verifyBabyGender() {
-        log.info("[아이 성별 검사 ]");
-        if(this.babyGenders == null || this.babyGenders.equals("")){
+    public boolean verifyBabiesInfo() {
+        if(babyBirthdays == null){
             return false;
         }
-        log.info("[아이 성별 Null 검사 : PASS ]");
-
-        for(Character babyGender : this.babyGenders){
-            log.info(babyGender.toString());
-
-            if(babyGender.equals('M') || babyGender.equals('F')) { } else {
-                throw new IllegalArgumentException("BABY_GENDER 는 'F' 또는 'M' 값만 포함할 수 있습니다.");
-            }
-            log.info("[아이 성별 입력값 검사 : PASS ]");
-        }
-        return true;
-    }
-
-    public Boolean verifyBabyBirthdays() {
-        log.info("[아이 생일 검사]");
-        if(this.babyBirthdays == null || this.babyBirthdays.equals("")){
+        if(babyGenders == null){
             return false;
         }
-        log.info("[아이 생일 검사 : PASS ]");
+        if(babyBirthdays.size() != babyGenders.size()){
+            throw new IllegalArgumentException("아기 생일, 성별의 값의 크기가 일치하지 않습니다.");
+        }
         return true;
-    }
-
-    public User toUser() {
-        return User.builder()
-                .id(this.id)
-                .nickname(this.nickname)
-                .ageGroupType(this.ageGroupType)
-                .build();
     }
 
     public List<UserBaby> toUserBabies(User user) {
         List<UserBaby> userBabies = new ArrayList<>();
-
         for(int i = 0; i < this.babyGenders.size(); i++){
             UserBaby userBaby = UserBaby.builder()
                     .user(user)
@@ -183,5 +133,4 @@ public class UserEditRequest{
         }
         return userBabies;
     }
-    
 }

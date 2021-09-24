@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.uahage.api.mapper.PlaceRestaurantReviewMapper">
+    <resultMap id="image" type="java.util.HashMap">
+        <id column="image_id" property="imageId"/>
+        <result column="image_path" property="imagePath"/>
+        <result column="preview_image_path" property="previewImagePath"/>
+    </resultMap>
+    <resultMap id="user" type="java.util.HashMap">
+        <id column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="profile" property="profile"/>
+    </resultMap>
+
+    <resultMap id="listMap" type="com.uahage.api.dto.PlaceRestaurantReviewsResponse">
+        <id column="id" property="id"/>
+        <result column="description" property="desc"/>
+        <result column="total_rating" property="totalRating"/>
+        <result column="taste_rating" property="tasteRating"/>
+        <result column="cost_rating" property="costRating"/>
+        <result column="service_rating" property="serviceRating"/>
+        <result column="updated_at" property="updatedAt"/>
+        <association property="user" resultMap="user"/>
+        <collection property="images" resultMap="image"/>
+    </resultMap>
+    <select id="findAllByReviewIdWithOrderByOption" parameterType="com.uahage.api.dto.PlaceRestaurantReviewsRequest" resultMap="listMap">
+        select
+            prr.id,
+            u.id as user_id, u.nickname, (select preview_image_path from user_images where user_id = u.id limit 1 offset 0) as profile,
+            prr.description, prr.total_rating, prr.taste_rating, prr.cost_rating, prr.service_rating, to_char(prr.updated_at::timestamp, 'YYYY.MM.DD') as updated_at,
+            prri.id as image_id, prri.image_path, prri.preview_image_path
+        from p_restaurant_reviews as prr
+            left join p_restaurant_review_images as prri on prr.id = prri.review_id
+            left join users as u on prr.user_id = u.id
+        where prr.restaurant_id = #{placeId}
+        <if test="order == 'date'">order by prr.updated_at desc</if>
+        <if test="order == 'top'">order by prr.total_rating desc</if>
+        <if test="order == 'low'">order by prr.total_rating asc</if>
+    </select>
+
+    <select id="findOneById" parameterType="java.lang.Long" resultMap="listMap">
+        select
+        prr.id,
+        u.id as user_id, u.nickname, (select preview_image_path from user_images where user_id = u.id limit 1 offset 0) as profile,
+        prr.description, prr.total_rating, prr.taste_rating, prr.cost_rating, prr.service_rating, to_char(prr.updated_at::timestamp, 'YYYY.MM.DD') as updated_at,
+        prri.image_path, prri.preview_image_path
+        from p_restaurant_reviews as prr
+        left join p_restaurant_review_images as prri on prr.id = prri.review_id
+        left join users as u on prr.user_id = u.id
+        where prr.id = #{reviewId}
+    </select>
+
+    <resultMap id="imageListMap" type="com.uahage.api.dto.PlaceRestaurantReviewImagesResponse">
+        <id column="id" property="imageId" />
+        <result column="image_path" property="imagePath" />
+        <result column="preview_image_path" property="previewImagePath" />
+    </resultMap>
+    <select id="findImagesByRestaurantId" parameterType="java.lang.Long" resultMap="imageListMap">
+        select prr.id, prri.image_path, prri.preview_image_path
+        from p_restaurant_reviews as prr
+        left join p_restaurant_review_images as prri
+            on prr.id = prri.review_id
+        where prr.restaurant_id = #{placeId} and prri.image_path is not null
+        order by prr.updated_at desc;
+    </select>
+</mapper>

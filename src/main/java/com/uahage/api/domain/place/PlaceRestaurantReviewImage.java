@@ -21,7 +21,7 @@ public class PlaceRestaurantReviewImage {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-    private PlaceRestaurantReview placeRestaurantReview;
+    private PlaceRestaurantReview review;
 
     @Column(name = "image_path", length = 100, nullable = false)
     private String imagePath;
@@ -36,9 +36,9 @@ public class PlaceRestaurantReviewImage {
     private LocalDateTime updatedAt;
 
     @Builder
-    public PlaceRestaurantReviewImage(Long id, PlaceRestaurantReview placeRestaurantReview, String imagePath, String previewImagePath) {
+    public PlaceRestaurantReviewImage(Long id, PlaceRestaurantReview review, String imagePath, String previewImagePath) {
         this.id = id;
-        this.placeRestaurantReview = placeRestaurantReview;
+        this.review = review;
         this.imagePath = imagePath;
         this.previewImagePath = previewImagePath;
     }

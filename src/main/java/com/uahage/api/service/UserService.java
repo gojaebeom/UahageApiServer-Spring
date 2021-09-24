@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +34,14 @@ public class UserService {
     private S3Service s3Service;
 
     public UserJoinResponse join(UserJoinRequest joinRequest) {
-
-        joinRequest.verifyAllState();
-        User user = userRepository.findByEmail(joinRequest.getEmail());
+        User user = userRepository.findByEmail(joinRequest.getEmailOrThrowException());
         log.info("기존 회원 유무 확인");
 
         if(user == null){
             // 회원 가입
             log.info("회원가입 진행");
-            Short duplicatedCount = userRepository.countByNickname(joinRequest.getNickname());
+
+            Short duplicatedCount = userRepository.countByNickname(joinRequest.getNicknameOrThrowException());
             log.info("중복채크 값, 0 이상일 시 중복:",duplicatedCount.toString());
             if(duplicatedCount > 0){
                 throw new IllegalArgumentException("닉네임이 중복되었습니다.");
@@ -51,9 +51,10 @@ public class UserService {
             userRepository.save(user);
 
             List<UserBaby> userBabies = joinRequest.toUserBabies(user);
-            System.out.println(userBabies);
-
-            userBabyRepository.saveAll(userBabies);
+            if(userBabies != null){
+                log.info("유저 아기정보 저장");
+                userBabyRepository.saveAll(userBabies);
+            }
         }
 
         log.info("로그인 진행");
@@ -75,30 +76,26 @@ public class UserService {
         if(user == null) throw new IllegalArgumentException("일치하는 유저가 없습니다");
 
         if(userEditRequest.verifyImageInit()){
-            log.info("[ 이미지 초기화 요청 -> s3 서버에서 이미지 삭제, DB 이미지 레코드 삭제 ]");
-            List<UserImage> userImages = userImageRepository.findAllByUserId(userEditRequest.getId());
-            for(UserImage userImage : userImages){
-                String[] imagePaths = userImage.getImagePath().split("/");
-                s3Service.delete("profiles/".concat(imagePaths[imagePaths.length-1]));
-                userImageRepository.deleteById(userImage.getId());
-            }
-        }else{
+            destroyProfile(userEditRequest.getId());
+        }
+
+        if(userEditRequest.verifyImages()){
+            destroyProfile(userEditRequest.getId());
+
             log.info("[ 이미지 업로드 요청 -> s3 서버에 이미지 업로드, DB에 이미지 이름 등록 ]");
             List<UserImage> userImages = new ArrayList<>();
+            List<HashMap<String, String>> fileNames = s3Service.uploads("profiles", userEditRequest.getId(), userEditRequest.getImages(), true);
 
-            if(userEditRequest.verifyImages()){
-                List<String> fileNames = s3Service.upload("profiles", userEditRequest.getId(), userEditRequest.getImages());
-
-                for(String fileName : fileNames){
-                    UserImage userImage = UserImage.builder()
-                            .user(user)
-                            .imagePath(fileName)
-                            .build();
-                    userImages.add(userImage);
-                }
-                System.out.println(userImages);
-                userImageRepository.saveAll(userImages);
+            for(HashMap<String, String> fileName : fileNames){
+                UserImage userImage = UserImage.builder()
+                        .user(user)
+                        .imagePath(fileName.get("origin"))
+                        .previewImagePath(fileName.get("preview"))
+                        .build();
+                userImages.add(userImage);
             }
+            System.out.println(userImages);
+            userImageRepository.saveAll(userImages);
         }
 
         if(userEditRequest.verifyNickname()){
@@ -112,7 +109,7 @@ public class UserService {
             log.info("[ 회원 연령층 정보 수정 : SOON ]");
         }
 
-        if(userEditRequest.verifyBabyBirthdays() && userEditRequest.verifyBabyGender()){
+        if(userEditRequest.verifyBabiesInfo()){
             log.info("[ 기존의 회원 아기정보 삭제 : SOON ]");
             List<UserBaby> userBabies = userBabyRepository.findAllByUser(user);
             System.out.println(userBabies);
@@ -127,10 +124,23 @@ public class UserService {
         }
     }
 
-    public void destroy(UserDestroyRequest userDestroyRequest) {
+    private void destroyProfile(Long id) throws Exception {
+        log.info("[ 이미지 초기화 요청 -> s3 서버에서 이미지 삭제, DB 이미지 레코드 삭제 ]");
+        List<UserImage> userImages = userImageRepository.findAllByUserId(id);
+        for(UserImage userImage : userImages){
+            String[] imagePaths = userImage.getImagePath().split("/");
+            String[] previewImagePaths = userImage.getPreviewImagePath().split("/");
+            s3Service.delete("profiles/".concat(imagePaths[imagePaths.length-1]));
+            s3Service.delete("profiles/".concat(previewImagePaths[previewImagePaths.length-1]));
+            userImageRepository.deleteById(userImage.getId());
+        }
+    }
+
+    public void destroy(Long id) throws Exception {
+        destroyProfile(id);
         log.info("[ 회원 탈퇴 요청 -> 탈퇴 처리 ]");
-        User user = userRepository.findUserById(userDestroyRequest.getIdOrThrowException());
-        if(user == null) throw new IllegalArgumentException("일치하는 유저가 없습니다");
+        User user = userRepository.findUserById(id);
+        if(user == null) throw new IllegalArgumentException("일치하는 유저가 없습니다.");
         userRepository.delete(user);
     }
 

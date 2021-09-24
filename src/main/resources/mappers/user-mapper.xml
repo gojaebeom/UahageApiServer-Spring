@@ -9,6 +9,7 @@
     </resultMap>
     <resultMap id="image" type="java.util.HashMap">
         <result column="image_path" property="imagePath"/>
+        <result column="preview_image_path" property="previewImagePath"/>
     </resultMap>
 
     <resultMap id="detail" type="com.uahage.api.dto.UserShowResponse">
@@ -21,9 +22,11 @@
     <select id="findOneById" parameterType="java.lang.Long" resultMap="detail">
         select
             u.id, u.nickname, u.age_group_type,
-            ub.id as baby_id, ub.baby_birthday, ub.baby_gender
+            ub.id as baby_id, ub.baby_birthday, ub.baby_gender,
+            ui.image_path, ui.preview_image_path
         from users u
             left outer join user_babies ub on u.id = ub.user_id
+            left outer join user_images ui on u.id = ui.user_id
         where u.id = #{id};
     </select>
 </mapper>

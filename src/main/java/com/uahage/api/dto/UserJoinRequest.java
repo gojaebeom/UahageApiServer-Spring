@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -24,15 +25,7 @@ public class UserJoinRequest{
     private List<Character> babyGenders;
     private List<String> babyBirthdays;
 
-    public void verifyAllState() {
-        this.verifyEmail();
-        this.verifyNickname();
-        this.verifyAgeGroupType();
-        this.verifyBabyGender();
-        this.verifyBabyBirthdays();
-    }
-
-    public void verifyEmail() {
+    public String getEmailOrThrowException() {
         log.info("[이메일 유효성 검사]");
         log.info(this.email);
         if(this.email == null){
@@ -52,9 +45,10 @@ public class UserJoinRequest{
             throw new IllegalArgumentException("이메일 형식이 아닙니다.");
         }
         log.info("[이메일 정규식 검사 : Pass]");
+        return this.email;
     }
 
-    public void verifyNickname() {
+    public String getNicknameOrThrowException() {
         log.info("[닉네임 유효성 검사]");
         log.info(this.nickname);
         final String PATTERN = "!/^[a-zA-Zㄱ-힣0-9]*$/";
@@ -83,13 +77,14 @@ public class UserJoinRequest{
             if (this.nickname.contains(slang))
                 throw new IllegalArgumentException("비속어를 포함할 수 없습니다.");
         log.info("[닉네임 비속어 검사 : PASS ]");
+        return this.nickname;
     }
 
-    public void verifyAgeGroupType() {
+    public Short getAgeGroupTypeOrThrowException() {
         log.info("[부모 연령층 유효성 검사]");
         log.info(this.ageGroupType.toString());
 
-        if(ageGroupType == null){
+        if(ageGroupType == null || ageGroupType == 0){
             this.ageGroupType = 6;
         }
         log.info("[부모 연령층 Null 검사 : PASS ]");
@@ -97,57 +92,40 @@ public class UserJoinRequest{
             throw new IllegalArgumentException("AGE_GROUP_TYPE 은 1 ~ 6 사이의 값만 포함할 수 있습니다.");
         }
         log.info("[부모 연령층 입력값 검사 : PASS ]");
-    }
 
-    public void verifyBabyGender() {
-        log.info("[아이 성별 검사 ]");
-        if(this.babyGenders == null || this.babyGenders.equals("")){
-            this.babyGenders.add('M');
-        }
-        log.info("[아이 성별 Null 검사 : PASS ]");
-
-        for(Character babyGender : this.babyGenders){
-            log.info(babyGender.toString());
-
-            if(babyGender.equals('M') || babyGender.equals('F')) { } else {
-                throw new IllegalArgumentException("BABY_GENDER 는 'F' 또는 'M' 값만 포함할 수 있습니다.");
-            }
-            log.info("[아이 성별 입력값 검사 : PASS ]");
-        }
-    }
-
-    public void verifyBabyBirthdays() {
-        log.info("[아이 생일 검사]");
-        if(this.babyBirthdays == null || this.babyBirthdays.equals("")){
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date now = new Date();
-            String now_day = format.format(now);
-            this.babyBirthdays.add(now_day);
-        }
-        log.info("[아이 생일 검사 : PASS ]");
+        return this.ageGroupType;
     }
 
     public User toUser() {
         return User.builder()
-            .email(this.email)
-            .nickname(this.nickname)
-            .ageGroupType(this.ageGroupType)
+            .email(email)
+            .nickname(nickname)
+            .ageGroupType(getAgeGroupTypeOrThrowException())
             .build();
     }
 
     public List<UserBaby> toUserBabies(User user) {
         List<UserBaby> userBabies = new ArrayList<>();
 
-        for(int i = 0; i < this.babyGenders.size(); i++){
-            UserBaby userBaby = UserBaby.builder()
-                    .user(user)
-                    .babyBirthday(this.babyBirthdays.get(i))
-                    .babyGender(this.babyGenders.get(i))
-                    .build();
-            userBabies.add(userBaby);
+        System.out.println(babyGenders);
+        System.out.println(babyBirthdays);
+
+        // 둘다 입력되지 않았을 경우
+        if(babyGenders == null && babyBirthdays == null){
+            return null;
+        }
+        if(babyGenders.size() == babyBirthdays.size()) {
+            for (int i = 0; i < babyBirthdays.size(); i++) {
+                UserBaby userBaby = UserBaby.builder()
+                        .user(user)
+                        .babyBirthday(babyBirthdays.get(i))
+                        .babyGender(babyGenders.get(i))
+                        .build();
+                userBabies.add(userBaby);
+            }
+        }else{
+            throw new IllegalArgumentException("아기 생일, 성별의 값의 크기가 일치하지 않습니다.");
         }
         return userBabies;
     }
-
-
 }
