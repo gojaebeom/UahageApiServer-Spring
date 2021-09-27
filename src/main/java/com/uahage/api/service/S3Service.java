@@ -9,6 +9,11 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.jpeg.JpegDirectory;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
@@ -19,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,21 +76,74 @@ public class S3Service {
             String stringUserId = String.valueOf(userId);
             String originName = DIR+"/"+"u"+stringUserId+"_"+stringDate+ext;
 
+
+
+            File _file = convert(file);
+            int orientation = 1; // 회전정보, 1. 0도, 3. 180도, 6. 270도, 8. 90도 회전한 정보
+
+            Metadata metadata; // 이미지 메타 데이터 객체
+            Directory directory; // 이미지의 Exif 데이터를 읽기 위한 객체
+            JpegDirectory jpegDirectory; // JPG 이미지 정보를 읽기 위한 객체
+
+            try{
+                metadata = JpegMetadataReader.readMetadata(_file);
+                directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                jpegDirectory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
+                if(directory != null){
+                    orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION); // 회전정보
+                }
+            }catch (Exception e){
+                orientation=1;
+            }
+            //imageFile
+            BufferedImage srcImg = ImageIO.read(_file);
+            // 회전 시킨다.
+            System.out.println(orientation);
+            switch (orientation) {
+                case 6:
+                    srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_90, null);
+                    break;
+                case 1:
+                    break;
+                case 3:
+                    srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_180, null);
+                    break;
+                case 8:
+                    srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_270, null);
+                    break;
+                default:
+                    orientation = 1;
+                    break;
+            }
+
             String preview = null;
             if(addPreview){
                 String name = DIR+"/"+"u"+stringUserId+"_"+stringDate+"_preview"+ext;
-                preview = uploadThumbnail(name, file);
+                preview = uploadThumbnail(name, srcImg);
             }
 
             s3Client.putObject(new PutObjectRequest(bucket, originName, file.getInputStream(), null)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
+            System.out.println(ext);
+
             HashMap<String, String> imageNames = new HashMap<>();
             imageNames.put("origin", s3Client.getUrl(bucket, originName).toString());
             imageNames.put("preview", preview);
             fileNames.add(imageNames);
+
+            _file.delete();
         }
         return fileNames;
+    }
+
+    private File convert(MultipartFile multipartFile) throws IOException {
+        File file= new File(multipartFile.getOriginalFilename());
+        file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(multipartFile.getBytes());
+        fos.close();
+        return file;
     }
 
     private void verifyFile(MultipartFile file) {
@@ -114,16 +169,8 @@ public class S3Service {
         log.info("[ 파일 사이즈 검사 OK ]");
     }
 
-    private String uploadThumbnail(String previewName, MultipartFile file) throws IOException {
-        InputStream in = file.getInputStream();
-        BufferedImage originalImage = ImageIO.read(in);
-
-//        if(originalImage.getWidth() < 200 && originalImage.getHeight() < 200){
-//            log.info("[ 원본 파일 크기 작음 -> 리사이징 안함 ]");
-//            return null;
-//        }
-
-        int imgWidth = Math.min(originalImage.getHeight(),  originalImage.getWidth() );
+    private String uploadThumbnail(String previewName, BufferedImage originalImage) throws IOException {
+        int imgWidth = Math.min(originalImage.getHeight(), originalImage.getWidth());
         int imgHeight = imgWidth;
 
         BufferedImage scaledImage = Scalr.crop(originalImage, (originalImage.getWidth() - imgWidth)/2, (originalImage.getHeight() - imgHeight)/2, imgWidth, imgHeight, null);
@@ -152,6 +199,5 @@ public class S3Service {
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
-
     }
 }

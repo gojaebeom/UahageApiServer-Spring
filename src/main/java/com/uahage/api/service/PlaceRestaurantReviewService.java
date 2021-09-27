@@ -67,8 +67,13 @@ public class PlaceRestaurantReviewService {
             }
         }
         Float tr = total/restaurantReviewsResponses.size();
-        DecimalFormat form = new DecimalFormat("#.#");
-        tr = Float.parseFloat(form.format(tr));
+
+        if(tr.isNaN()){
+            tr = 0.0F;
+        }else{
+            DecimalFormat form = new DecimalFormat("#.#");
+            tr = Float.parseFloat(form.format(tr));
+        }
 
         HashMap<String, Object> shared = new HashMap<>();
         shared.put("total", restaurantReviewsResponses.size());
